@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT module ((query)*) >
+<!ATTLIST module
+    name                     CDATA #REQUIRED
+    description              CDATA #IMPLIED
+>
+
+<!ELEMENT query ((column | join)*)>
+<!ATTLIST query
+    name CDATA #REQUIRED
+    description CDATA #IMPLIED
+    source CDATA #IMPLIED
+    type NMTOKEN #REQUIRED
+    orderBy CDATA #IMPLIED
+>
