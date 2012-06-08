@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "file:/definitions.dtd">
+
+<module name="business" description="business case test">
+
+   <Query name="Scenario" description="Fecth scenario related scenario runs"
+          basetable="dtopt.scenario" alias="s">
+          
+          <column name="id"
+                  columnname="scenarioid"
+                  orderby="false"
+                  from="s"/>
+                  
+          <column name="name"
+                  columnname="name"
+                  orderby="false"
+                  from="s"/>
+                  
+          <column name="runid"
+                  columnname="scenariorunid"
+                  orderby="true"
+                  trend="true"
+                  from="sr"/>
+          
+          <join name="scenariorun"
+                table="dtopt.scenariorun"
+                alias="sr"
+                outer="false">
+                <constraint src="sr.scenarioid"
+                            dest="s.scenarioid"/>
+          </join>
+          
+                  
+          
+   </Query>
+
+
+
+</module>

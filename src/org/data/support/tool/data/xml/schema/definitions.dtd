@@ -6,11 +6,34 @@
     description              CDATA #IMPLIED
 >
 
-<!ELEMENT query ((column | join)*)>
+<!ELEMENT query ((column+ | join*))>
 <!ATTLIST query
     name CDATA #REQUIRED
     description CDATA #IMPLIED
-    source CDATA #IMPLIED
-    type NMTOKEN #REQUIRED
-    orderBy CDATA #IMPLIED
+    basetable CDATA #REQUIRED
+    alias CDATA #REQUIRED
+>
+
+
+<!ELEMENT column (CDATA*)>
+<!ATTLIST column
+    name CDATA #REQUIRED
+    columnname CDATA #REQUIRED
+    orderby (true | false) "false"
+    trend (true | false) "false"
+    from CDATA #REQUIRED
+>
+
+<!ELEMENT join (constraint+)>
+<!ATTLIST join
+    name CDATA #REQUIRED
+    table CDATA #REQUIRED
+    outer (true | false) "false"
+    alias CDATA #REQUIRED
+>
+
+<!ELEMENT constraint (CDATA+)>
+<!ATTLIST constraint
+    src CDATA #REQUIRED
+    dest CDATA #REQUIRED
 >
