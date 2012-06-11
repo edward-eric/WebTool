@@ -1,5 +1,7 @@
 package org.data.support.tool.data.xml.mgr;
 
+import java.util.List;
+
 import org.data.support.tool.data.xml.processor.IProcessor;
 
 public class DefMgrBean implements DefMgr{

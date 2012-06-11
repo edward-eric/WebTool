@@ -14,6 +14,7 @@ public class Column implements Serializable{
 	private boolean orderby;
 	private boolean trend;
 	private String from;
+	
 	public String getName() {
 		return name;
 	}
@@ -43,6 +44,15 @@ public class Column implements Serializable{
 	}
 	public void setFrom(String from) {
 		this.from = from;
-	}	
+	}
+	
+	public Column(String name, String columnName, boolean orderby,
+			boolean trend, String from) {
+		this.name = name;
+		this.columnName = columnName;
+		this.orderby = orderby;
+		this.trend = trend;
+		this.from = from;
+	}
 
 }

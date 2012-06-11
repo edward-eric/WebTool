@@ -1,6 +1,8 @@
 package org.data.support.tool.data.xml.metadata;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Join implements Serializable{
 	
@@ -13,6 +15,8 @@ public class Join implements Serializable{
 	private String table;
 	private String alias;
 	private boolean outer;
+	
+	private List<Constraint> constraints = new ArrayList<Constraint>();
 	
 	public String getName() {
 		return name;
@@ -39,6 +43,27 @@ public class Join implements Serializable{
 		this.outer = outer;
 	}
 	
+	public List<Constraint> getConstraints() {
+		return constraints;
+	}
 	
+	public void addConstraint(Constraint constraint){
+		constraints.add(constraint);
+	}
+	
+	public void removeConstraint(Constraint constraint){
+		constraints.remove(constraint);
+	}
+	
+	public void removeCOnstraint(int index){
+		constraints.remove(index);
+	}
+	
+	public Join(String name, String table, String alias, boolean outer) {
+		this.name = name;
+		this.table = table;
+		this.alias = alias;
+		this.outer = outer;
+	}	
 
 }

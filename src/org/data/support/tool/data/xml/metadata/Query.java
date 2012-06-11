@@ -78,6 +78,15 @@ public class Query implements Serializable{
 		this.joins.remove(join);
 	}
 	
+	public Query(String name, String description, String baseTable, String alias) {
+		this.name = name;
+		this.description = description;
+		this.baseTable = baseTable;
+		this.alias = alias;
+	}
+	
+	
+	
 	
 
 }

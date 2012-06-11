@@ -27,6 +27,9 @@ public class Constraint implements Serializable{
 		this.dest = dest;
 	}
 	
-	
+	public Constraint(String src, String dest) {
+		this.src = src;
+		this.dest = dest;
+	}	
 
 }
