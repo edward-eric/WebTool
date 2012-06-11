@@ -10,9 +10,12 @@
 	
 	<bean id="queryProcessor" class="org.data.support.tool.data.xml.processor.impl.QueryProcessor"/>
 	
+	<bean id="queryProducer" class="org.data.support.tool.data.xml.mgr.producer.impl.QueryProducer"/>
+	
     <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean">
         <property name="fileProcessor" ref="fileProcessor"/>
         <property name="queryProcessor" ref="queryProcessor"/>
+        <property name="queryProducer" ref="queryProducer"/>
     </bean>
 
 </beans>

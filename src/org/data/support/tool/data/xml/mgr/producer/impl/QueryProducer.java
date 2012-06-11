@@ -1,0 +1,99 @@
+package org.data.support.tool.data.xml.mgr.producer.impl;
+
+import java.util.ListIterator;
+
+import org.data.support.tool.data.xml.metadata.Column;
+import org.data.support.tool.data.xml.metadata.Constraint;
+import org.data.support.tool.data.xml.metadata.Join;
+import org.data.support.tool.data.xml.metadata.Query;
+import org.data.support.tool.data.xml.mgr.producer.IProducer;
+
+public class QueryProducer implements IProducer {
+	
+	/**
+	 * Local query instance for this producer
+	 */
+	private Query qury = null;
+	
+	/**
+	 * output sql used for 
+	 */
+	private String outsql;
+	
+	private final static String _SEPERATOR_DB = ".";
+	private final static String _AS_DB = " AS ";
+	private final static String _INNER_JOIN_DB = " INNER JOIN ";
+	private final static String _OUTER_JOIN_DB = " LEFT OUTER JOIN ";
+	private final static String _ON_DB = " ON ";
+	private final static String _AND_DB = " AND ";
+	private final static String _LINE_DB = "\n";
+	private final static String _SPACE_DB = " ";
+	private final static String _EQUAL_DB = " = ";
+	private final static String _FROM_DB = " FROM ";
+	private final static String _SELECT_DB = "SELECT ";
+	private final static String _SELECT_SEP_DB = ",";
+
+	@Override
+	public String outputSQL(Query query) {
+		qury = query;
+		return composeQuery();
+	}
+	
+	protected String composeQuery(){
+		return _SELECT_DB + getColumnsQuery() + getFromQuery() + getJoinsQuery();
+	}
+	
+	protected String composeColumnQuery(Column column){
+		return column.getFrom() + _SEPERATOR_DB + column.getColumnName() +
+		       _AS_DB + column.getName();
+	}
+	
+	protected String getColumnsQuery(){
+		StringBuilder columnsql = new StringBuilder();
+		ListIterator<Column> iter = qury.getColumns().listIterator();
+		while(iter.hasNext()){
+			columnsql.append(composeColumnQuery(iter.next()));
+			if(iter.hasNext()){
+				columnsql.append(_SELECT_SEP_DB + _LINE_DB);
+			}
+		}
+		return columnsql.toString();
+	}
+	
+	protected String composeJoinQuery(Join join){
+		String condition = _INNER_JOIN_DB;
+		if(join.isOuter()){
+			condition = _OUTER_JOIN_DB;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(condition + join.getTable() + _SEPERATOR_DB + join.getAlias() + _LINE_DB);
+		sql.append(_ON_DB);
+		ListIterator<Constraint> iter = join.getConstraints().listIterator();
+		while(iter.hasNext()){
+			sql.append(composeConstraint(iter.next()));
+			if(iter.hasNext()){
+				sql.append(_AND_DB);
+			}
+		}
+		return sql.toString();
+	}
+	
+	protected String getJoinsQuery() {
+		StringBuilder joinsql = new StringBuilder();
+		ListIterator<Join> iter = qury.getJoins().listIterator();
+		while(iter.hasNext()){
+			joinsql.append(composeJoinQuery(iter.next()));
+		}
+		return joinsql.toString();
+	}
+	
+	protected String getFromQuery(){
+		return _FROM_DB + qury.getBaseTable() + _SPACE_DB + qury.getAlias() + _LINE_DB;
+	}
+	
+	protected String composeConstraint(Constraint con){
+		return _SPACE_DB + con.getSrc() + _EQUAL_DB + con.getDest() + _LINE_DB;
+	}
+	
+
+}
