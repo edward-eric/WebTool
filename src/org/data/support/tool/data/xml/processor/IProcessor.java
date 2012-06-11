@@ -6,8 +6,6 @@ import org.dom4j.Document;
 
 public interface IProcessor {
 	
-	public void init();
-	
-	public List process(Document doc);
+	public List process(List<Document> docs);
 
 }

@@ -1,8 +1,9 @@
-package org.data.support.tool.data.xml.processor;
+package org.data.support.tool.data.xml.processor.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.data.support.tool.data.xml.metadata.Column;
 import org.data.support.tool.data.xml.metadata.Constraint;
@@ -12,6 +13,15 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 public class QueryProcessor extends XMLProcessor {
+	
+	public List<Query> process(List<Document> docs){
+		List<Query> queries = new ArrayList<Query>();
+		ListIterator<Document> iter = docs.listIterator();
+		while(iter.hasNext()){
+			queries.addAll(process(iter.next()));
+		}
+		return queries;
+	}
 	
 	public List<Query> process(Document doc) {
 		return getQueryList(doc.getRootElement());
