@@ -6,7 +6,7 @@
     description              CDATA #IMPLIED
 >
 
-<!ELEMENT query ((column+ | join*))>
+<!ELEMENT query ((column+ , join*))>
 <!ATTLIST query
     name CDATA #REQUIRED
     description CDATA #IMPLIED
@@ -32,7 +32,7 @@
     alias CDATA #REQUIRED
 >
 
-<!ELEMENT constraint (CDATA+)>
+<!ELEMENT constraint (CDATA*)>
 <!ATTLIST constraint
     src CDATA #REQUIRED
     dest CDATA #REQUIRED

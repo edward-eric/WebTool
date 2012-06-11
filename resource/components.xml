@@ -3,7 +3,7 @@
 
 <module name="business" description="business case test">
 
-   <Query name="Scenario" description="Fecth scenario related scenario runs"
+   <query name="Scenario" description="Fecth scenario related scenario runs"
           basetable="dtopt.scenario" alias="s">
           
           <column name="id"
@@ -32,7 +32,7 @@
           
                   
           
-   </Query>
+   </query>
 
 
 
