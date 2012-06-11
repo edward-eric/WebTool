@@ -1,0 +1,18 @@
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="fileProcessor" class="org.data.support.tool.data.xml.processor.impl.FileProcessor">
+	   <property name="fileNames">
+           <value>components.xml</value>
+        </property>
+	</bean>
+	
+	<bean id="queryProcessor" class="org.data.support.tool.data.xml.processor.impl.QueryProcessor"/>
+	
+    <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean">
+        <property name="fileProcessor" ref="fileProcessor"/>
+        <property name="queryProcessor" ref="queryProcessor"/>
+    </bean>
+
+</beans>
