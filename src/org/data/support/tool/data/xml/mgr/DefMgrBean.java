@@ -1,7 +1,9 @@
 package org.data.support.tool.data.xml.mgr;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.data.support.tool.data.xml.metadata.Query;
 import org.data.support.tool.data.xml.processor.FProcessor;
@@ -37,18 +39,22 @@ public class DefMgrBean implements DefMgr{
 		this.queryProducer = queryProducer;
 	}
 	
-	public void processInput(){
+	public List<String> returnQueryList(){
 		try {
 			List<Document> docs = fileProcessor.getDocuments();
 			List<Query> quries = queryProcessor.process(docs);
-			System.out.println(queryProducer.outputSQL(quries.get(0)));
+			ListIterator<Query> iter = quries.listIterator();
+			List<String> queryList = new ArrayList<String>();
+			while(iter.hasNext()){
+				queryList.add(queryProducer.outputSQL(iter.next()));
+			}
+			return queryList;
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.support.data</groupId>
+    <artifactId>supporttool</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>supporttool</name>
+	<developers>
+		<developer>
+			<id>eric.chen</id>
+			<name>eric</name>
+			<email>eric.chen@support.com</email>
+			<organization>support</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>8</timezone>
+		</developer>
+	</developers>
+
+    <!-- repo -->
+	<repositories>
+		<repository>
+			<id>dtrepository</id>
+			<name>developer</name>
+			<url>http://10.11.102.115/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+	
+	<!-- set properties which could be used later -->
+	<properties>
+	   <spring.version>3.0.5.RELEASE</spring.version>
+	</properties>
+	
+    <dependencies>
+       
+       <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+          <version>${spring.version}</version>
+          <exclusions>
+             <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+             </exclusion>
+          </exclusions>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-expression</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context-support</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-tx</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jdbc</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-collections</artifactId>
+          <version>3.2.1</version>
+        </dependency>
+        
+        <dependency>
+           <groupId>org.apache.commons</groupId>
+           <artifactId>commons-logging</artifactId>
+           <version>1.1.1</version>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-pool</groupId>
+           <artifactId>commons-pool</artifactId>
+           <version>1.0</version>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-dbcp</groupId>
+           <artifactId>commons-dbcp</artifactId>
+           <version>1.0</version>
+           <exclusions>
+              <exclusion>
+                 <groupId>commons-collections</groupId>
+                 <artifactId>commons-collections</artifactId>
+              </exclusion>
+              <exclusion>
+                 <groupId>commons-lang</groupId>
+                 <artifactId>commons-lang</artifactId>
+              </exclusion>
+              <exclusion>
+                 <groupId>xml-apis</groupId>
+                 <artifactId>xml-apis</artifactId>
+              </exclusion>
+              <exclusion>
+                 <groupId>junit</groupId>
+                 <artifactId>junit</artifactId>
+              </exclusion>
+              <exclusion>
+                 <groupId>javax.sql</groupId>
+                 <artifactId>jdbc-stdext</artifactId>
+              </exclusion>
+           </exclusions>
+        </dependency>
+        
+        <dependency>
+           <groupId>com.ibm.db2.jcc</groupId>
+           <artifactId>db2jcc4</artifactId>
+           <version>4.11.88</version>
+        </dependency>
+        
+        <dependency>
+           <groupId>org.dom4j</groupId>
+           <artifactId>dom4j</artifactId>
+           <version>1.6.1</version>
+        </dependency>
+
+    </dependencies>
+    
+    
+    <!-- build definitions -->
+    <build>
+       <directory>${project.basedir}/target</directory>
+       <outputDirectory>${project.build.directory}/classes</outputDirectory>
+       <finalName>${project.artifactId}-${project.version}</finalName>
+       <testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
+       <sourceDirectory>${project.basedir}/src</sourceDirectory>
+       <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+       <resources>
+           <resource>
+             <directory>${project.basedir}/resource</directory>
+           </resource>
+       </resources>
+       <testResources>
+           <testResource>
+              <directory>${project.basedir}/test-resource</directory>
+           </testResource>
+       </testResources>
+    </build>
+    
+</project>

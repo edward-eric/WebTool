@@ -6,7 +6,7 @@ import org.data.support.tool.common.Spring;
 import org.data.support.tool.data.DBExecutor;
 import org.data.support.tool.data.xml.mgr.DefMgr;
 
-public class XMLtest {
+public class XMLtest1 {
 
 	/**
 	 * @param args

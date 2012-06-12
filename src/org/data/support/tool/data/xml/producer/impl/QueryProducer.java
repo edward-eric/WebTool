@@ -19,6 +19,9 @@ public class QueryProducer implements IProducer {
 	 * output sql used for 
 	 */
 	private String outsql;
+
+	private final static String _DESC_DB = " DESC ";
+	private final static String _ASC_DB = " ASC ";
 	
 	private final static String _SEPERATOR_DB = ".";
 	private final static String _AS_DB = " AS ";
@@ -40,7 +43,9 @@ public class QueryProducer implements IProducer {
 	}
 	
 	protected String composeQuery(){
-		return _SELECT_DB + getColumnsQuery() + getFromQuery() + getJoinsQuery();
+		return "WITH DTTMP.X ( " + getPrefixQuery() + " ) AS ( " + _LINE_DB +
+		       _SELECT_DB + getColumnsQuery() + getFromQuery() + getJoinsQuery() +
+		       getOrderByQuery() + " ) " + _LINE_DB + " SELECT * FROM DTTMP.X";
 	}
 	
 	protected String composeColumnQuery(Column column){
@@ -66,7 +71,7 @@ public class QueryProducer implements IProducer {
 			condition = _OUTER_JOIN_DB;
 		}
 		StringBuilder sql = new StringBuilder();
-		sql.append(condition + join.getTable() + _SEPERATOR_DB + join.getAlias() + _LINE_DB);
+		sql.append(condition + join.getTable() + _SPACE_DB + join.getAlias() + _LINE_DB);
 		sql.append(_ON_DB);
 		ListIterator<Constraint> iter = join.getConstraints().listIterator();
 		while(iter.hasNext()){
@@ -93,6 +98,46 @@ public class QueryProducer implements IProducer {
 	
 	protected String composeConstraint(Constraint con){
 		return _SPACE_DB + con.getSrc() + _EQUAL_DB + con.getDest() + _LINE_DB;
+	}
+	
+	
+	protected String getOrderByQuery(){
+		StringBuilder orderBySql = new StringBuilder();
+		ListIterator<Column> iter = qury.getColumns().listIterator();
+		boolean _flag = false;
+		while(iter.hasNext()){
+			Column column = iter.next();
+			if(column.isOrderby()){
+				if(_flag == true){
+					orderBySql.append(_SELECT_SEP_DB + _LINE_DB);
+				}else{
+					_flag = true;
+					orderBySql.append(" ORDER BY ");					
+				}
+				orderBySql.append(composeOrderByQuery(column));
+			}
+		}
+		return orderBySql.toString();
+	}
+	
+	protected String composeOrderByQuery(Column column){
+		String _trend = _DESC_DB ;
+		if(column.isTrend()){
+			_trend = _ASC_DB;
+		}
+		return column.getFrom() + _SEPERATOR_DB + column.getColumnName() + _trend;
+	}
+	
+	protected String getPrefixQuery(){
+		StringBuilder _prefixQuery = new StringBuilder();
+		ListIterator<Column> iter = qury.getColumns().listIterator();
+		while(iter.hasNext()){
+			_prefixQuery.append(iter.next().getName());
+			if(iter.hasNext()){
+				_prefixQuery.append(_SELECT_SEP_DB);
+			}
+		}
+		return _prefixQuery.toString();
 	}
 	
 
