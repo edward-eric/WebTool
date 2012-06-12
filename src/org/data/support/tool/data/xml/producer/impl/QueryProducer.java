@@ -1,4 +1,4 @@
-package org.data.support.tool.data.xml.mgr.producer.impl;
+package org.data.support.tool.data.xml.producer.impl;
 
 import java.util.ListIterator;
 
@@ -6,7 +6,7 @@ import org.data.support.tool.data.xml.metadata.Column;
 import org.data.support.tool.data.xml.metadata.Constraint;
 import org.data.support.tool.data.xml.metadata.Join;
 import org.data.support.tool.data.xml.metadata.Query;
-import org.data.support.tool.data.xml.mgr.producer.IProducer;
+import org.data.support.tool.data.xml.producer.IProducer;
 
 public class QueryProducer implements IProducer {
 	

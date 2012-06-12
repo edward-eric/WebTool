@@ -4,9 +4,9 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 import org.data.support.tool.data.xml.metadata.Query;
-import org.data.support.tool.data.xml.mgr.producer.IProducer;
 import org.data.support.tool.data.xml.processor.FProcessor;
 import org.data.support.tool.data.xml.processor.IProcessor;
+import org.data.support.tool.data.xml.producer.IProducer;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 

@@ -1,4 +1,4 @@
-package org.data.support.tool.data.xml.mgr.producer;
+package org.data.support.tool.data.xml.producer;
 
 import org.data.support.tool.data.xml.metadata.Query;
 
