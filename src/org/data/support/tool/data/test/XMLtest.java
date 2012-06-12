@@ -1,14 +1,10 @@
 package org.data.support.tool.data.test;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
+import org.data.support.tool.common.Spring;
+import org.data.support.tool.data.DBExecutor;
 import org.data.support.tool.data.xml.mgr.DefMgr;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 public class XMLtest {
 
@@ -17,29 +13,19 @@ public class XMLtest {
 	 */
 	public static void main(String[] args) {
 
-		ApplicationContext ctx = new FileSystemXmlApplicationContext(
-				"resource/appctx.xml");
-
-		DefMgr mgr = (DefMgr) ctx.getBean("defMgr");
+		DefMgr mgr = Spring.getBean(DefMgr.class);
 
 		mgr.processInput();
-		
-		dbtest(ctx);
 
+		dbtest();
 	}
 
-	private static void dbtest(ApplicationContext ctx) {
-		JdbcTemplate jdbcTemp = (JdbcTemplate) ctx.getBean("jdbcTemplate");
+	private static void dbtest() {
+		DBExecutor executor = Spring.getBean(DBExecutor.class);
 
-		List<String> schemas = jdbcTemp.query(
-				"select schemaname from syscat.schemata",
-				new RowMapper<String>() {
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						return rs.getString(1).trim();
-					}
-				});
-		
+		List<String> schemas = executor
+				.query("select schemaname from syscat.schemata");
+
 		System.out.println(schemas);
 	}
 
