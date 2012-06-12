@@ -83,7 +83,7 @@ public class QueryProcessor extends XMLProcessor {
 	
 	private List<Query> getQueryList(Element e){
 		List<Query> queryList = new ArrayList<Query>();
-		Iterator<Element> iter = e.elementIterator("Query");
+		Iterator<Element> iter = e.elementIterator("query");
 		while(iter.hasNext()){
 			queryList.add(getQuery(iter.next()));
 		}
