@@ -37,8 +37,8 @@
 	   <constructor-arg ref="dataSource"/>
 	</bean>
 	
-	<bean id="dbExcecutor" class="org.data.support.tool.data.DBExecutor">
-	   <property name="jdbcTemplate" ref="jdbcTemplate"/>
+	<bean id="dbAccessor" class="org.data.support.tool.data.impl.DBAccessor">
+	   <property name="template" ref="jdbcTemplate"/>
 	</bean>
 </beans>
 
