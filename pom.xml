@@ -4,7 +4,7 @@
     <groupId>org.support.data</groupId>
     <artifactId>supporttool</artifactId>
     <version>1.1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>supporttool</name>
 	<developers>
 		<developer>
@@ -146,20 +146,26 @@
     
     <!-- build definitions -->
     <build>
+       <defaultGoal>install</defaultGoal>
        <directory>${project.basedir}/target</directory>
-       <outputDirectory>${project.build.directory}/classes</outputDirectory>
+       <outputDirectory>${project.build.directory}/WebRoot/WEB-INF/classes</outputDirectory>
        <finalName>${project.artifactId}-${project.version}</finalName>
        <testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
-       <sourceDirectory>${project.basedir}/src</sourceDirectory>
-       <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+       <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+       <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
        <resources>
            <resource>
-             <directory>${project.basedir}/resource</directory>
+             <targetPath>resource</targetPath>
+             <filtering>false</filtering>
+             <directory>${project.basedir}/src/main/resource</directory>
+             <excludes>
+                <exclude>*.png</exclude>
+             </excludes>
            </resource>
        </resources>
        <testResources>
            <testResource>
-              <directory>${project.basedir}/test-resource</directory>
+              <directory>${project.basedir}/src/test/test-resource</directory>
            </testResource>
        </testResources>
     </build>

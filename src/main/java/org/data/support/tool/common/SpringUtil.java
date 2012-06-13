@@ -3,6 +3,7 @@ package org.data.support.tool.common;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
@@ -30,7 +31,7 @@ public class SpringUtil {
 	 */
 	public static ApplicationContext getInstance(){
 		if(ctx == null){
-			ctx = new FileSystemXmlApplicationContext(_CONFIG_PATTERN);
+			ctx = new ClassPathXmlApplicationContext(_CONFIG_PATTERN);
 		}
 		return ctx;
 	}

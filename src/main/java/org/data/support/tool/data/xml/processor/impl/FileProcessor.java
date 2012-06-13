@@ -1,8 +1,10 @@
 package org.data.support.tool.data.xml.processor.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import org.dom4j.io.SAXReader;
 
 public class FileProcessor implements FProcessor {
 	
-	private final static String _LOCATION_PREFIX = "resource/";
+	private final static String _LOCATION_PREFIX = "/resource/";
 	
 	private String[] fileNames;
 
@@ -29,8 +31,14 @@ public class FileProcessor implements FProcessor {
 		SAXReader reader = new SAXReader(true);
 		List documents = new ArrayList();
 		for(int i = 0; i < fileNames.length; i++){
-			File file = new File(_LOCATION_PREFIX + fileNames[i]);
-			if(file.exists()){
+			File file = null;
+			try {
+				file = new File( this.getClass().getResource(_LOCATION_PREFIX + fileNames[i]).toURI());
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(file!=null && file.exists()){
 				Document doc = reader.read(file);
 				documents.add(doc);
 			}
