@@ -40,5 +40,20 @@
 	<bean id="dbAccessor" class="org.data.support.tool.data.impl.DBAccessor">
 	   <property name="template" ref="jdbcTemplate"/>
 	</bean>
+	
+	<!-- XML preference -->
+	<bean id="regexXMLFilter" class="org.apache.commons.io.filefilter.RegexFileFilter">
+	   <constructor-arg name="pattern" value="[a-zA-Z\d]+.xml"/>
+	</bean>
+	
+	<bean id="classpathPreferenceResource" class="org.springframework.core.io.ClassPathResource">
+	   <constructor-arg name="path" value="/resource/preference-conf"/>
+	</bean>
+	
+	<bean id="viewFileHandler" class="org.data.support.tool.common.file.handler.impl.ViewFileHandlerImpl">
+	   <property name="regexFilter" ref="regexXMLFilter"/>
+	   <property name="resource" ref="classpathPreferenceResource"/>
+	</bean>
+	<!-- End preference -->
 </beans>
 

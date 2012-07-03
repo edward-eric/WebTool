@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8"/>
+
+	<package name="basicstruts2" extends="json-default">
+
+		<action name="index" class="org.data.support.tool.web.struts.actions.FetchViewList" method="execute">
+			<result name="success">page/viewSelect.jsp</result>
+		</action>
+		
+		<action name="hello" class="org.data.support.tool.web.struts.actions.HelloWorldAction" method="execute">
+		    <result name="success">page/hello.jsp</result>
+		    <result name="input">page/error.jsp</result>
+		</action>
+		
+		<action name="show" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="execute">
+		   <result type="json"/>
+		</action>
+		
+		<action name="view" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="funcs">
+		   <result>page/viewSelect.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

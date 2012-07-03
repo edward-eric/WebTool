@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT module ((views*, subviews*)) >
+<!ATTLIST module
+    description              CDATA #IMPLIED
+>
+
+<!ELEMENT views ((view)+)>
+<!ATTLIST views
+    description CDATA #IMPLIED
+>
+
+<!ELEMENT subviews ((subview)+)>
+<!ATTLIST subviews
+    description CDATA #IMPLIED
+>
+
+<!ELEMENT view ((subview)+)>
+<!ATTLIST view
+    id CDATA #REQUIRED
+    description CDATA #IMPLIED
+>
+
+<!ELEMENT subview ((field)*)>
+<!ATTLIST subview
+    id CDATA #REQUIRED
+    description CDATA #IMPLIED
+>
+
+<!ELEMENT field (CDATA)*>
+<!ATTLIST field
+    name CDATA #REQUIRED
+    title CDATA #REQUIRED
+>

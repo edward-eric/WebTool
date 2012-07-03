@@ -26,11 +26,17 @@
 			<name>developer</name>
 			<url>http://10.11.102.115/nexus/content/groups/public</url>
 		</repository>
+		<repository>
+		    <id>central</id>
+		    <name>maven2</name>
+		    <url>http://repo1.maven.org/maven2/</url>
+		</repository>
 	</repositories>
 	
 	<!-- set properties which could be used later -->
 	<properties>
 	   <spring.version>3.0.5.RELEASE</spring.version>
+	   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
     <dependencies>
@@ -84,13 +90,19 @@
         </dependency>
         
         <dependency>
-          <groupId>org.apache.commons</groupId>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-web</artifactId>
+          <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>commons-collections</groupId>
           <artifactId>commons-collections</artifactId>
           <version>3.2.1</version>
         </dependency>
         
         <dependency>
-           <groupId>org.apache.commons</groupId>
+           <groupId>commons-logging</groupId>
            <artifactId>commons-logging</artifactId>
            <version>1.1.1</version>
         </dependency>
@@ -140,6 +152,64 @@
            <artifactId>dom4j</artifactId>
            <version>1.6.1</version>
         </dependency>
+        
+        <dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.3.1.2</version>
+			<exclusions>
+			   <exclusion>
+			       <groupId>org.apache.struts.xwork</groupId>
+			       <artifactId>xwork-core</artifactId>
+			   </exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.apache.struts.xwork</groupId>
+		   <artifactId>xwork-core</artifactId>
+		   <version>2.2.1</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.json-lib</groupId>
+		    <artifactId>json-lib</artifactId>
+		    <version>2.4</version>
+		    <exclusions>
+		       <exclusion>
+		          <groupId>commons-beanutils</groupId>
+		          <artifactId>commons-beanutils</artifactId>
+		       </exclusion>
+		       <exclusion>
+		          <groupId>commons-logging</groupId>
+		          <artifactId>commons-logging</artifactId>
+		       </exclusion>
+		       <exclusion>
+		          <groupId>commons-collections</groupId>
+		          <artifactId>commons-collections</artifactId>
+		       </exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.apache.struts</groupId>
+		   <artifactId>struts2-json-plugin</artifactId>
+		   <version>2.2.1.1</version>
+		</dependency>
+		
+		<dependency>
+		   <groupId>javax.servlet</groupId>
+		   <artifactId>servlet-api</artifactId>
+		   <version>2.3</version>
+		   <scope>provided</scope>
+		</dependency>
 
     </dependencies>
     
@@ -168,6 +238,28 @@
               <directory>${project.basedir}/src/test/test-resource</directory>
            </testResource>
        </testResources>
+       <plugins>
+		    <plugin>
+	    		<groupId>org.apache.maven.plugins</groupId>
+	    		<artifactId>maven-compiler-plugin</artifactId>
+	    		<version>2.3.2</version>
+	    		<configuration>
+	          		<source>1.6</source>
+	          		<target>1.6</target>
+	        	</configuration>
+    		</plugin>
+    		<plugin>
+    		   <groupId>org.apache.tomcat.maven</groupId>
+    		   <artifactId>tomcat7-maven-plugin</artifactId>
+    		   <version>2.0-beta-1</version>
+    		   <configuration>
+    		      <url>http://localhost:9090/manager/html</url>
+    		      <path>/${project.artifactId}-${project.version}</path>
+    		      <username>admin</username>
+    		      <password>admin</password>
+    		   </configuration>
+    		</plugin>
+    	</plugins>
     </build>
     
 </project>

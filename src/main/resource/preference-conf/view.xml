@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "viewdef.dtd">
+
+<module>
+
+  <views>
+  
+      <view id="ScenarioResult">
+          <subview id="Scenarios"/>
+          <subview id="ScenarioRuns"/>
+          <subview id="Results"/>
+      </view>
+   
+  </views>
+  
+  <subviews>
+     
+     <subview id="Scenarios">
+        <field name="ss" title="ss"/>
+     </subview>
+     
+     <subview id="ScenarioRuns">
+        <field name="ss" title="ss"/>
+     </subview>
+     
+     <subview id="Results">
+        <field name="ss" title="ss"/>
+     </subview>
+     
+  </subviews>
+
+   
+   
+</module>
