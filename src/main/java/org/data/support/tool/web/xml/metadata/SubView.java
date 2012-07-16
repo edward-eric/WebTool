@@ -1,13 +1,30 @@
 package org.data.support.tool.web.xml.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubView {
+/**
+ * Subview
+ * @author eric.chen
+ *
+ */
+public class SubView implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3675161186791435977L;
 	private String id;
+	private String title;
 	private List<Field> fieldList = new ArrayList<Field>();
 	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public String getId() {
 		return id;
 	}
@@ -17,20 +34,8 @@ public class SubView {
 	public List<Field> getFieldList() {
 		return fieldList;
 	}
-	public void setFieldList(List<Field> fieldList) {
-		this.fieldList = fieldList;
-	}
-	
 	public void addFieldToList(Field field){
 		this.fieldList.add(field);
 	}
 	
-	public void removeFieldFromList(Field field){
-		this.fieldList.remove(field);
-	}
-	public void removeFieldWithIndex(int index){
-		this.fieldList.remove(index);
-	}
-	
-
 }

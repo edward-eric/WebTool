@@ -1,15 +1,12 @@
 package org.data.support.tool.web.struts.actions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.data.support.tool.common.SpringUtil;
-import org.data.support.tool.common.file.handler.DefaultFileHandler;
-import org.data.support.tool.web.xml.metadata.View;
-import org.dom4j.DocumentException;
+import org.data.support.tool.common.file.handler.DefaultDefinitionHandler;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -20,36 +17,26 @@ public class FetchViewList extends ActionSupport {
 	 */
 	private static final long serialVersionUID = -3458090841311636102L;
 	
-	private List viewList;
+	private List<String> viewList;
 
-	public List getViewList() {
-		return viewList;
-	}
-	public void setViewList(List viewList) {
+	public void setViewList(List<String> viewList) {
 		this.viewList = viewList;
 	}
 
+
 	public String execute(){
-		viewList = new ArrayList();
+		viewList = new ArrayList<String>();
 		
 		
-        DefaultFileHandler utilizer = SpringUtil.getBean("viewFileHandler", DefaultFileHandler.class);
+        DefaultDefinitionHandler utilizer = SpringUtil.getBean("viewDefinitionHandler", DefaultDefinitionHandler.class);
 		
-		Set<Object> views;
-		try {
-			views = utilizer.getObjectSet();
-			Iterator<Object> iter = views.iterator();
+		Map<String, Object> views;
+			views = utilizer.defaultReturn();
+			Iterator<String> iter = views.keySet().iterator();
 			
 			while(iter.hasNext()){
-				viewList.add(((View)iter.next()).getId());
+				viewList.add(iter.next());
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		
 		
