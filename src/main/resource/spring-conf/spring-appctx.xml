@@ -49,11 +49,12 @@
 	<bean id="classpathPreferenceResource" class="org.springframework.core.io.ClassPathResource">
 	   <constructor-arg name="path" value="/resource/preference-conf"/>
 	</bean>
-	
-	<bean id="viewFileHandler" class="org.data.support.tool.common.file.handler.impl.ViewFileHandlerImpl">
+		
+	<bean id="viewDefinitionHandler" class="org.data.support.tool.common.file.handler.impl.ViewDefinitionHandlerImpl" init-method="init">
 	   <property name="regexFilter" ref="regexXMLFilter"/>
 	   <property name="resource" ref="classpathPreferenceResource"/>
 	</bean>
+
 	<!-- End preference -->
 </beans>
 

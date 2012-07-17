@@ -15,15 +15,22 @@
     description CDATA #IMPLIED
 >
 
-<!ELEMENT view ((subview)+)>
+<!ELEMENT view ((subref)+)>
 <!ATTLIST view
     id CDATA #REQUIRED
+    title CDATA #REQUIRED
     description CDATA #IMPLIED
+>
+<!ELEMENT subref (CDATA)*>
+<!ATTLIST subref
+    id CDATA #REQUIRED
 >
 
 <!ELEMENT subview ((field)*)>
 <!ATTLIST subview
     id CDATA #REQUIRED
+    title CDATA #IMPLIED
+    order CDATA #IMPLIED
     description CDATA #IMPLIED
 >
 
@@ -31,4 +38,6 @@
 <!ATTLIST field
     name CDATA #REQUIRED
     title CDATA #REQUIRED
+    width CDATA #IMPLIED
+    sortable (true | false) "true"
 >

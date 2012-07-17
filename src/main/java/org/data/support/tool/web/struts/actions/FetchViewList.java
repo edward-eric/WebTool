@@ -17,15 +17,24 @@ public class FetchViewList extends ActionSupport {
 	 */
 	private static final long serialVersionUID = -3458090841311636102L;
 	
-	private List<String> viewList;
+	private List viewList;
 
-	public void setViewList(List<String> viewList) {
+	public void setViewList(List viewList) {
 		this.viewList = viewList;
+	}
+	
+	
+
+
+	public List getViewList() {
+		return viewList;
 	}
 
 
+
+
 	public String execute(){
-		viewList = new ArrayList<String>();
+		viewList = new ArrayList();
 		
 		
         DefaultDefinitionHandler utilizer = SpringUtil.getBean("viewDefinitionHandler", DefaultDefinitionHandler.class);

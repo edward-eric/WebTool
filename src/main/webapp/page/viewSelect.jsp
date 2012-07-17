@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%@page import="org.data.support.tool.web.ui.DataGridDisplayBean" 
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,12 +27,13 @@
                  headerKey="-1"
                  headerValue="Select View"
                  size="1"
-                 onchange="refresh(this.value)"
+                 onchange="loadLeadingTable(this.value)"
                  />
        
    </div>
    
    <div id="mainContent">
+      <br/>
       <h2>this is main content</h2>
    </div>
    

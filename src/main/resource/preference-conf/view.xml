@@ -5,25 +5,29 @@
 
   <views>
   
-      <view id="ScenarioResult">
-          <subview id="Scenarios"/>
-          <subview id="ScenarioRuns"/>
-          <subview id="Results"/>
+      <view id="ScenarioResult" title="Scenario Results">
+          <subref id="Scenario"/>
+          <subref id="ScenarioRun"/>
+          <subref id="Result"/>
       </view>
    
   </views>
   
   <subviews>
      
-     <subview id="Scenarios">
+     <subview id="Scenario" title="Scenario">
+        <field name="id" title="ScenarioID" width="50"/>
+        <field name="name" title="Name" width="100"/>
+        <field name="goal" title="Goal" width="50"/>
+        <field name="type" title="Type" width="50"/>
+        <field name="description" title="Description" width="200"/>
+     </subview>
+     
+     <subview id="ScenarioRun" title="Scenario Run">
         <field name="ss" title="ss"/>
      </subview>
      
-     <subview id="ScenarioRuns">
-        <field name="ss" title="ss"/>
-     </subview>
-     
-     <subview id="Results">
+     <subview id="Result" title="Senario Run Results">
         <field name="ss" title="ss"/>
      </subview>
      

@@ -27,7 +27,7 @@
 <body>
 	<h2>Editable DataGrid</h2>
 	
-	<!-- <table id="scenario" title="Scenario" url="show.action">
+	<table id="scenario" title="Scenario" url="show.action">
 		<thead>
 			<tr>
 				<th field="id" width="80">ID</th>
@@ -38,9 +38,7 @@
 				<th field="classname" width="60">CLASS</th>
 			</tr>
 		</thead>
-	</table> -->
-	
-	<table id="scenario"/>
+	</table>
 	
 </body>
 </html>

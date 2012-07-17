@@ -15,10 +15,13 @@ public class XMLtest1 {
 	 */
 	public static void main(String[] args) {
 
-		DefMgr mgr = SpringUtil.getBean(DefMgr.class);
+		/*DefMgr mgr = SpringUtil.getBean(DefMgr.class);
 
 
-		dbtest(mgr.returnQueryList().get(0));
+		dbtest(mgr.returnQueryList().get(0));*/
+		
+		
+		System.out.println("/");
 	}
 
 	private static void dbtest(String sql) {

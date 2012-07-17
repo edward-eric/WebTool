@@ -23,6 +23,10 @@
 		   <result type="json"/>
 		</action>
 		
+		<action name="getheader" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="loadView">
+		   <result type="json"/>
+		</action>
+		
 		<action name="view" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="funcs">
 		   <result>page/viewSelect.jsp</result>
 		</action>

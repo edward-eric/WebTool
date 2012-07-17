@@ -1,24 +1,12 @@
 package org.data.support.tool.data.test;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.data.support.tool.common.SpringUtil;
-import org.data.support.tool.common.file.handler.DefaultFileHandler;
-import org.data.support.tool.common.xml.processor.ClasspathFileProcessor;
+import org.data.support.tool.common.file.handler.DefaultDefinitionHandler;
 import org.data.support.tool.web.xml.metadata.View;
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 public class FileUtil {
 	
@@ -37,15 +25,40 @@ public class FileUtil {
 		
 			
 		
-		DefaultFileHandler utilizer = SpringUtil.getBean("viewFileHandler", DefaultFileHandler.class);
+		DefaultDefinitionHandler utilizer = SpringUtil.getBean("viewDefinitionHandler", DefaultDefinitionHandler.class);
 		
-		Set<Object> views = utilizer.getObjectSet();
+		/*Set<Object> views = utilizer.getObjectSet();
 		
 		Iterator<Object> iter = views.iterator();
 		
 		while(iter.hasNext()){
 			System.out.println(((View)iter.next()).getSubviewList().size());
-		}
+		}*/
+		
+		Map views = utilizer.defaultReturn();
+		
+		View view = (View) views.get("ScenarioResult");
+		
+		System.out.println(view);
+		
+		utilizer.refresh();
+		
+		Map views2 = utilizer.defaultReturn();
+		
+        View view2 = (View) views2.get("ScenarioResult");
+		
+		System.out.println(view2);
+		
+		/*Iterator<Entry<K, V>> iter = ((View)views.get("ScenarioResult")).getSubviewMap().entrySet().iterator();
+		
+		while(iter.hasNext()){
+			SubView sub = (SubView)iter.next();
+			if(sub==null){
+				continue;
+			}
+			System.out.println(sub.getTitle());
+		}*/
+		
 		
 	}
 
