@@ -78,42 +78,6 @@ public class DataFetchResultAction extends ActionSupport implements
 		return SUCCESS;
 	}
 	
-	public String loadView() throws IOException, DocumentException{
-		/*DefaultFileHandler utilizer = SpringUtil.getBean("viewFileHandler", DefaultFileHandler.class);
-		View view = (View)utilizer.getObjectMap().get(request.getParameter("viewid"));
-		
-		viewName = view.getTitle();
-		subviews = new ArrayList<Object>();
-		List subviews2 = view.getSubviewList();
-		ListIterator iter = subviews2.listIterator();
-		while(iter.hasNext()){
-			SubView sub = (SubView)iter.next();
-			if(sub==null){
-				continue;
-			}
-			Map m = new HashMap();
-			m.put("id", sub.getId());
-			m.put("title", sub.getTitle());
-			ListIterator iter2 = sub.getFieldList().listIterator();
-			List fieldList2 = new ArrayList();
-			while(iter2.hasNext()){
-				Field field = (Field)iter2.next();
-				Map m2 = new HashMap();
-				m2.put("name", field.getName());
-				m2.put("title", field.getTitle());
-				m2.put("width", field.getWidth());
-				fieldList2.add(m2);
-			}
-			m.put("subview", fieldList2);
-			subviews.add(m);
-		}*/
-		return SUCCESS;
-	}
-	
-	public String loadHeaderColumns(){
-		headerColumns = new ArrayList<Object>();		
-		return SUCCESS;
-	}
 	
 	public String execute() {
 		
@@ -146,11 +110,10 @@ public class DataFetchResultAction extends ActionSupport implements
 		for(int i = ( pageIndex - 1 ) * rowIndex; i< pageIndex * rowIndex; i++){
 			Map<String, Object> map = new HashMap<String,Object>();
 			map.put("id", i); 
-			map.put("sex", 'F');
-			map.put("name","student" + i);
-			map.put("age", 11+i);
-			map.put("birthday", "1983-11-4");
-		    map.put("classname", "class" + i);      
+			map.put("name", 'F');
+			map.put("goal","student" + i);
+			map.put("type", 11+i);
+			map.put("description", "1983-11-4");   
 			this.rows.add(map);
 		}
 		

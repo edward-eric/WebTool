@@ -24,6 +24,7 @@
 <!ELEMENT subref (CDATA)*>
 <!ATTLIST subref
     id CDATA #REQUIRED
+    order CDATA #REQUIRED
 >
 
 <!ELEMENT subview ((field)*)>

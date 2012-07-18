@@ -10,23 +10,20 @@ import org.data.support.tool.common.file.handler.DefaultDefinitionHandler;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-public class FetchViewList extends ActionSupport {
+public class FetchViews extends ActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3458090841311636102L;
 	
-	private List viewList;
+	private List<String> viewList;
 
-	public void setViewList(List viewList) {
+	public void setViewList(List<String> viewList) {
 		this.viewList = viewList;
 	}
-	
-	
 
-
-	public List getViewList() {
+	public List<String> getViewList() {
 		return viewList;
 	}
 
@@ -34,21 +31,18 @@ public class FetchViewList extends ActionSupport {
 
 
 	public String execute(){
-		viewList = new ArrayList();
+		viewList = new ArrayList<String>();
 		
 		
         DefaultDefinitionHandler utilizer = SpringUtil.getBean("viewDefinitionHandler", DefaultDefinitionHandler.class);
 		
 		Map<String, Object> views;
-			views = utilizer.defaultReturn();
-			Iterator<String> iter = views.keySet().iterator();
+		views = utilizer.defaultReturn();
+		Iterator<String> iter = views.keySet().iterator();
 			
-			while(iter.hasNext()){
-				viewList.add(iter.next());
-			}
-		
-		
-		
+		while(iter.hasNext()){
+			viewList.add(iter.next());
+		}
 		return SUCCESS;
 	}
 

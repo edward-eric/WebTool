@@ -6,9 +6,9 @@
   <views>
   
       <view id="ScenarioResult" title="Scenario Results">
-          <subref id="Scenario"/>
-          <subref id="ScenarioRun"/>
-          <subref id="Result"/>
+          <subref id="Scenario" order="1"/>
+          <subref id="ScenarioRun" order="2"/>
+          <subref id="Result" order="3"/>
       </view>
    
   </views>

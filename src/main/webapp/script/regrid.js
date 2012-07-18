@@ -35,10 +35,10 @@ function loadData(){
 
 function loadLeadingTable(viewID){
 	$("#mainContent").empty();
-	$.getJSON("loadLeadingTable", {"viewid", viewID}, function(data){
-		$('<table id="' + data.viewName + '"/>').appendTo("mainContent");
+	$.getJSON("headers", {"viewid":viewID}, function(data){
+		$('<table id="' + viewID + '"/>').appendTo("mainContent");
 		loadDataIntoTable(data.viewName, data.headerColumns, "show.action");
-	})
+	});
 }
 
 function writeHeader(viewID){
@@ -47,7 +47,6 @@ function writeHeader(viewID){
 		$('<table id="scenario"/>').appendTo("#mainContent");
 		regrid("scenario", data.headerColumns, "show.action");
 	});
-	
 }
 
 function refresh(view){
