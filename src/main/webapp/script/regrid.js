@@ -1,6 +1,9 @@
-function loadDataIntoTable(id, headerColumns, action){
-	$('#'+id).datagrid({
+function loadDataIntoTable(viewID, subviewID, title, headerColumns, action){
+	$('#'+subviewID).datagrid({
+		title: title,
 		url: action,
+		fitColumns: true,
+		striped: true,
 		columns: [headerColumns],
 		loadMsg: 'Message Loading...',
 		width: 750,
@@ -10,54 +13,40 @@ function loadDataIntoTable(id, headerColumns, action){
 		singleSelect: true,
 		pageNumber: 1,
 		pageSize: 20,
-		pageList: [10,20,30,50]				
+		pageList: [10,20,30,50],
+		toolbar: [{
+			id: "btnQuery",
+			text: "Query",
+			iconCls: "icon-search",
+			handler: function(){
+				alert("Query");
+			}
+		},'-',{
+			id: "btnModifyQuery",
+			text: "Modify Query",
+			iconCls: "icon-search",
+			handler: function() {
+				alert("Modify Query");
+			}
+		},'-'],
+		onClickRow: function(rowIndex, rowData) {
+			loadInheritingTable(viewID, subviewID);
+		}			
 	});
-}
-
-function castDataGrid(tableID, action){
-	$('#'+tableID).datagrid({
-		url:          action,
-		loadMsg:      'Data is Loading...',
-		width:        750,
-		height:       350,
-		pagination:   true,
-		rownumbers:   true,
-		singleSelect: true,
-		pageNumber:   1,
-		pageSize:     20,
-		pageList:     [10, 20, 30, 50]
-	});
-}
-
-function loadData(){
-	castDataGrid('scenario', 'show.action');
 }
 
 function loadLeadingTable(viewID){
 	$("#mainContent").empty();
 	$.getJSON("headers", {"viewid":viewID}, function(data){
-		$('<table id="' + viewID + '"/>').appendTo("mainContent");
-		loadDataIntoTable(data.viewName, data.headerColumns, "show.action");
+		$('<div><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
+		loadDataIntoTable(data.viewID, data.subViewID, data.subViewTitle, data.headerColumns, "show.action");
 	});
 }
 
-function writeHeader(viewID){
-	$("#mainContent").empty();
-	$.getJSON("getheader",{"viewid":viewID}, function(data){
-		$('<table id="scenario"/>').appendTo("#mainContent");
-		regrid("scenario", data.headerColumns, "show.action");
-	});
-}
 
-function refresh(view){
-	$('#mainContent').empty();
-	$('<table id="' + view + '"/>').appendTo('#mainContent');
-	regrid(view, [  
-	                    {field:'id',title:'id',width:100},  
-	                    {field:'name',title:'name',width:100},  
-	                    {field:'sex',title:'sex',width:100},
-	                    {field:'age',title:'age',width:100},
-	                    {field:'birthday',title:'birthday',width:100},
-	                    {field:'classname',title:'classname',width:100}
-	                ], 'show.action')
+function loadInheritingTable(viewID, subviewID){
+	$.getJSON("headers", {"viewid":viewID, "subviewid":subviewID}, function(data){
+		$('<div id="' + data.subViewID +  '"><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
+		loadDataIntoTable(data.viewID, data.subViewID, data.subViewTitle, data.headerColumns, "show.action");
+	});
 }

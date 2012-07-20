@@ -17,6 +17,7 @@ public class View implements Serializable{
 	private static final long serialVersionUID = -6702472430612171264L;
 	private String id;
 	private String title;
+	private String leadingSubView;
 	private Map<String, SubView> subviewMap = new HashMap<String, SubView>();
 	
 	public String getTitle() {
@@ -30,6 +31,12 @@ public class View implements Serializable{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getLeadingSubView() {
+		return leadingSubView;
+	}
+	public void setLeadingSubView(String leadingSubView) {
+		this.leadingSubView = leadingSubView;
 	}
 	public Map<String, SubView> getSubviewMap() {
 		return subviewMap;

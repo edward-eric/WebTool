@@ -54,6 +54,10 @@
 	   <property name="regexFilter" ref="regexXMLFilter"/>
 	   <property name="resource" ref="classpathPreferenceResource"/>
 	</bean>
+	
+	<bean id="fetchHeaders" class="org.data.support.tool.web.struts.actions.FetchViewHeaders" >
+	   <property name="utilizer" ref="viewDefinitionHandler"/>
+	</bean>
 
 	<!-- End preference -->
 </beans>

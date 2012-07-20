@@ -39,15 +39,7 @@ public class FileUtil {
 		
 		View view = (View) views.get("ScenarioResult");
 		
-		System.out.println(view);
-		
-		utilizer.refresh();
-		
-		Map views2 = utilizer.defaultReturn();
-		
-        View view2 = (View) views2.get("ScenarioResult");
-		
-		System.out.println(view2);
+		System.out.println(view.getLeadingSubView());
 		
 		/*Iterator<Entry<K, V>> iter = ((View)views.get("ScenarioResult")).getSubviewMap().entrySet().iterator();
 		

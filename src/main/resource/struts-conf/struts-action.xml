@@ -14,25 +14,12 @@
 			<result name="success">page/viewSelect.jsp</result>
 		</action>
 		
-		<action name="hello" class="org.data.support.tool.web.struts.actions.HelloWorldAction" method="execute">
-		    <result name="success">page/hello.jsp</result>
-		    <result name="input">page/error.jsp</result>
-		</action>
-		
 		<action name="show" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="execute">
 		   <result type="json"/>
 		</action>
 		
-		<action name="headers" class="org.data.support.tool.web.struts.actions.FetchViewHeaders" method="execute">
+		<action name="headers" class="fetchHeaders" method="execute">
 		   <result type="json"/>
-		</action>
-		
-		<action name="getheader" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="loadView">
-		   <result type="json"/>
-		</action>
-		
-		<action name="view" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="funcs">
-		   <result>page/viewSelect.jsp</result>
 		</action>
 
 	</package>

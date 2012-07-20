@@ -24,7 +24,8 @@
 <!ELEMENT subref (CDATA)*>
 <!ATTLIST subref
     id CDATA #REQUIRED
-    order CDATA #REQUIRED
+    next CDATA #IMPLIED
+    isleading (true | false) "false"
 >
 
 <!ELEMENT subview ((field)*)>

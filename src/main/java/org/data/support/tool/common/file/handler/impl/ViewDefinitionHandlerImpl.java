@@ -25,7 +25,7 @@ public class ViewDefinitionHandlerImpl extends DefaultDefinitionHandlerImpl {
 	
 	private Map<String, Object> viewMap;
 	private Map<String, Object> subviewMap;
-	private Map<String, List<String>> viewToSubviewMap;
+	private Map<String, List<SubView>> viewToSubviewMap;
 	
 	private List<Element> viewsElementList;
 	private List<Element> subviewsElementList;
@@ -34,7 +34,7 @@ public class ViewDefinitionHandlerImpl extends DefaultDefinitionHandlerImpl {
 	public void process() {
 		viewMap = new HashMap<String, Object>();
 		subviewMap = new HashMap<String, Object>();
-		viewToSubviewMap = new HashMap<String, List<String>>();
+		viewToSubviewMap = new HashMap<String, List<SubView>>();
 		
 		viewsElementList = new ArrayList<Element>();
 		subviewsElementList = new ArrayList<Element>();
@@ -48,14 +48,21 @@ public class ViewDefinitionHandlerImpl extends DefaultDefinitionHandlerImpl {
 		processSubViews(subviewsElementList);
 		
 		Iterator<Entry<String, Object>> iter = viewMap.entrySet().iterator();
-		
+		 
 		while(iter.hasNext()){
 			Entry<String, Object> entry = iter.next();
 			View viewInstance = (View) entry.getValue();
-			List<String> listForSubviews = viewToSubviewMap.get(entry.getKey());
-			ListIterator<String> iter2 = listForSubviews.listIterator();
+			List<SubView> listForSubviews = viewToSubviewMap.get(entry.getKey());
+			ListIterator<SubView> iter2 = listForSubviews.listIterator();
 			while(iter2.hasNext()){
-				viewInstance.addSubViewToMap((SubView) subviewMap.get(iter2.next()));
+				SubView ref = iter2.next();
+				SubView sub = (SubView) subviewMap.get(ref.getId());
+				if(ref.isLeading() && viewInstance.getLeadingSubView() == null){
+					viewInstance.setLeadingSubView(ref.getId());
+				}
+				sub.setLeading(ref.isLeading());
+				sub.setNextSubView(ref.getNextSubView());
+				viewInstance.addSubViewToMap(sub);
 			}
 			defaultMap.put(entry.getKey(), viewInstance);
 		}
@@ -105,7 +112,7 @@ public class ViewDefinitionHandlerImpl extends DefaultDefinitionHandlerImpl {
 		viewInstance.setId(viewID);
 		viewInstance.setTitle(viewTitle);
 		viewMap.put(viewID, viewInstance);
-		List<String> subs = new ArrayList<String>();
+		List<SubView> subs = new ArrayList<SubView>();
 		ListIterator<Element> iter = view.elements(SUBREF_STAMP).listIterator();
 		while(iter.hasNext()){
 			subs.add(processSubRefElement(iter.next()));
@@ -128,8 +135,15 @@ public class ViewDefinitionHandlerImpl extends DefaultDefinitionHandlerImpl {
 		subviewMap.put(subviewID, subviewInstance);
 	}
 	
-	private String processSubRefElement(Element subref) {
-		return subref.attributeValue("id");
+	private SubView processSubRefElement(Element subref) {
+		String id = subref.attributeValue("id");
+		String next = subref.attributeValue("next");
+		String isleading = subref.attributeValue("isleading");
+		SubView sub = new SubView();
+		sub.setId(id);
+		sub.setLeading(Boolean.valueOf(isleading));
+		sub.setNextSubView(next);
+		return sub;
 	}
 	
 	private Field processFieldElement(Element field){
