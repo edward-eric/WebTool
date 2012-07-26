@@ -15,7 +15,7 @@ import org.dom4j.io.SAXReader;
 
 public class FileProcessor implements FProcessor {
 	
-	private final static String _LOCATION_PREFIX = "/resource/";
+	private final static String _LOCATION_PREFIX = "/resource/datareader-conf/";
 	
 	private String[] fileNames;
 

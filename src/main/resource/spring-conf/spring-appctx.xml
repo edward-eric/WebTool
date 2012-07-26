@@ -16,13 +16,13 @@
 	
 	<bean id="queryProcessor" class="org.data.support.tool.data.xml.processor.impl.QueryProcessor"/>
 	
-	<bean id="queryProducer" class="org.data.support.tool.data.xml.producer.impl.QueryProducer"/>
+	<bean id="queryProducer" class="org.data.support.tool.common.file.handler.impl.QueryProducerImpl"/>
 	
-    <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean">
+<!--     <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean">
         <property name="fileProcessor" ref="fileProcessor"/>
         <property name="queryProcessor" ref="queryProcessor"/>
         <property name="queryProducer" ref="queryProducer"/>
-    </bean>
+    </bean> -->
     
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -41,6 +41,10 @@
 	   <property name="template" ref="jdbcTemplate"/>
 	</bean>
 	
+	<bean id="jsonAccessor" class="org.data.support.tool.dao.impl.JsonDataAccessorImpl">
+	   <property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+	
 	<!-- XML preference -->
 	<bean id="regexXMLFilter" class="org.apache.commons.io.filefilter.RegexFileFilter">
 	   <constructor-arg name="pattern" value="[a-zA-Z\d]+.xml"/>
@@ -49,14 +53,29 @@
 	<bean id="classpathPreferenceResource" class="org.springframework.core.io.ClassPathResource">
 	   <constructor-arg name="path" value="/resource/preference-conf"/>
 	</bean>
+	
+	<bean id="classpathDataReaderResource" class="org.springframework.core.io.ClassPathResource">
+	   <constructor-arg name="path" value="/resource/datareader-conf"/>
+	</bean>
 		
 	<bean id="viewDefinitionHandler" class="org.data.support.tool.common.file.handler.impl.ViewDefinitionHandlerImpl" init-method="init">
 	   <property name="regexFilter" ref="regexXMLFilter"/>
 	   <property name="resource" ref="classpathPreferenceResource"/>
 	</bean>
 	
+	<bean id="queryDefinitionHandler" class="org.data.support.tool.common.file.handler.impl.QueryDefinitionHandlerImpl" init-method="init">
+	   <property name="regexFilter" ref="regexXMLFilter"/>
+	   <property name="resource" ref="classpathDataReaderResource"/>
+	   <property name="producer" ref="queryProducer"/>
+	</bean>
+	
 	<bean id="fetchHeaders" class="org.data.support.tool.web.struts.actions.FetchViewHeaders" >
 	   <property name="utilizer" ref="viewDefinitionHandler"/>
+	</bean>
+	
+	<bean id="fetchData" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" >
+	   <property name="jsonAccessor" ref="jsonAccessor"/>
+	   <property name="handler" ref="queryDefinitionHandler"/>
 	</bean>
 
 	<!-- End preference -->

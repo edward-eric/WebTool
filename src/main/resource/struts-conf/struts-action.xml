@@ -14,7 +14,7 @@
 			<result name="success">page/viewSelect.jsp</result>
 		</action>
 		
-		<action name="show" class="org.data.support.tool.web.struts.actions.DataFetchResultAction" method="execute">
+		<action name="show" class="fetchData" method="execute">
 		   <result type="json"/>
 		</action>
 		

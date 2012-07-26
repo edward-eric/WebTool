@@ -1,10 +1,7 @@
 package org.data.support.tool.common;
 
-import java.util.List;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * Spring Util class give support for users to get a static application context

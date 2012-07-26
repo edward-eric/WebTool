@@ -38,7 +38,7 @@ function loadDataIntoTable(viewID, subviewID, title, headerColumns, action){
 function loadLeadingTable(viewID){
 	$("#mainContent").empty();
 	$.getJSON("headers", {"viewid":viewID}, function(data){
-		$('<div><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
+		$('<div id="' + data.subViewID +  '_div"><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
 		loadDataIntoTable(data.viewID, data.subViewID, data.subViewTitle, data.headerColumns, "show.action");
 	});
 }
@@ -46,7 +46,8 @@ function loadLeadingTable(viewID){
 
 function loadInheritingTable(viewID, subviewID){
 	$.getJSON("headers", {"viewid":viewID, "subviewid":subviewID}, function(data){
-		$('<div id="' + data.subViewID +  '"><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
+	    $('#'+data.subViewID+'_div').remove();
+		$('<div id="' + data.subViewID +  '_div"><table id="' + data.subViewID + '"/></div>').appendTo("#mainContent");
 		loadDataIntoTable(data.viewID, data.subViewID, data.subViewTitle, data.headerColumns, "show.action");
 	});
 }
