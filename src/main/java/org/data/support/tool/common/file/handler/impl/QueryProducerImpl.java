@@ -40,7 +40,12 @@ public class QueryProducerImpl implements QueryProducer {
 	@Override
 	public String outputSQL(Query query) {
 		qury = query;
-		return composeQuery();
+		return composeQuery2();
+	}
+	
+	protected String composeQuery2(){
+		return _SELECT_DB + getColumnsQuery() + getFromQuery() + getJoinsQuery() +
+	       getOrderByQuery();
 	}
 	
 	protected String composeQuery(){

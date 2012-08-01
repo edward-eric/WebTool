@@ -9,23 +9,18 @@ import java.util.Map;
  * @author eric.chen
  *
  */
-public interface JsonDataAccessor{
+public interface JsonDataAccessor extends DataAccessor{
 	
-	/**
-	 * Convert data to List<Map<String, Object>>
-	 * @param sql
-	 * @param colNames
-	 * @return JSON
-	 */
-	public List<Map<String, Object>> queryJsonMapResult(String sql, final List<String> colNames);
-	
-	/**
-	 * Convert data to List<Map<String, Object>>
-	 * @param sql
-	 * @param params
-	 * @param colNames
-	 * @return JSON
-	 */
-	public List<Map<String, Object>> queryJsonMapResult(String sql, Object[] params, final List<String> colNames);
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			final List<String> colNames);
 
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			Object[] params, final List<String> colNames);
+
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			final List<String> colNames, int startIndex, int pageSize);
+
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			Object[] params, final List<String> colNames, int startIndex,
+			int pageSize);
 }

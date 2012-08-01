@@ -2,6 +2,7 @@ package org.data.support.tool.data.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.data.support.tool.common.SpringUtil;
@@ -36,8 +37,13 @@ public class XMLtest1 {
 		cols2.add("id");
         cols2.add("name");
         cols2.add("description");
-		List<Map<String, Object>> schemas2 = accessor.queryJsonMapResult(sql, cols2);
-		System.out.println(schemas2);
+		List<Map<String, Object>> schemas2 = accessor.queryJsonMapResult(sql, cols2, 5, 7);
+		ListIterator iter = schemas2.listIterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next());
+		}
+		
+		System.out.println(accessor.getTotalRecords(sql));
 		
 	}
 

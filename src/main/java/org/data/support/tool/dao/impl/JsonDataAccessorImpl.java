@@ -14,13 +14,41 @@ public class JsonDataAccessorImpl extends DataAccessorImpl implements JsonDataAc
 	@Override
 	public List<Map<String, Object>> queryJsonMapResult(String sql,
 			List<String> colNames) {
-		return getJdbcTemplate().query(sql, new JsonMultiColumnsRowMapper(colNames));
+		wrapToPaingSql(sql);
+		return getJdbcTemplate().query(getFinalSql(),
+				new JsonMultiColumnsRowMapper(colNames));
 	}
 
 	@Override
 	public List<Map<String, Object>> queryJsonMapResult(String sql,
 			Object[] params, List<String> colNames) {
-		return getJdbcTemplate().query(sql, params, new JsonMultiColumnsRowMapper(colNames));
+		wrapToPaingSql(sql);
+		return getJdbcTemplate().query(getFinalSql(), params,
+				new JsonMultiColumnsRowMapper(colNames));
+	}
+
+	@Override
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			List<String> colNames, int startIndex, int pageSize) {
+		setPagingSize(startIndex, pageSize);
+		wrapToPaingSql(sql);
+		return getJdbcTemplate().query(getFinalSql(),
+				new JsonMultiColumnsRowMapper(colNames));
+	}
+
+	@Override
+	public List<Map<String, Object>> queryJsonMapResult(String sql,
+			Object[] params, List<String> colNames, int startIndex, int pageSize) {
+		setPagingSize(startIndex, pageSize);
+		wrapToPaingSql(sql);
+		return getJdbcTemplate().query(getFinalSql(), params,
+				new JsonMultiColumnsRowMapper(colNames));
+	}
+
+	@Override
+	public int getTotalRecords(String sql) {
+		wrapToSizeSql(sql);
+		return getJdbcTemplate().queryForInt(getSizeSql());
 	}
 
 }

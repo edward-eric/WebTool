@@ -29,5 +29,4 @@ public class JsonMultiColumnsRowMapper implements RowMapper<Map<String, Object>>
 		}
 		return columns;
 	}
-
 }

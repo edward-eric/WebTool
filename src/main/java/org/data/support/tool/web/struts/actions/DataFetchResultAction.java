@@ -3,6 +3,7 @@ package org.data.support.tool.web.struts.actions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class DataFetchResultAction extends ActionSupport implements
 	private static final long serialVersionUID = -2027495765135108434L;
 	
 	private HttpServletRequest request;
-	private List<Object> rows;
+	private List rows;
 	private int total;
 	
 	private JsonDataAccessor jsonAccessor;
@@ -42,11 +43,11 @@ public class DataFetchResultAction extends ActionSupport implements
 		this.total = total;
 	}
 
-	public void setRows(List<Object> rows) {
+	public void setRows(List rows) {
 		this.rows = rows;
 	}
 	
-	public List<Object> getRows(){
+	public List getRows(){
 		return rows;
 	}
 	
@@ -56,7 +57,7 @@ public class DataFetchResultAction extends ActionSupport implements
 		int pageIndex = Integer.parseInt(request.getParameter("page"));
 		int rowIndex  = Integer.parseInt(request.getParameter("rows"));
 		
-		this.rows = new ArrayList<Object>();
+		this.rows = new ArrayList();
 		
 		String sql = handler.defaultReturn().get("Scenario").toString();
 		
@@ -66,10 +67,18 @@ public class DataFetchResultAction extends ActionSupport implements
         cols2.add("description");
         cols2.add("goal");
         cols2.add("type");
-		
-        List<Map<String, Object>> ss = jsonAccessor.queryJsonMapResult(sql, cols2);
         
-        for(int i = ( pageIndex - 1 ) * rowIndex; i< pageIndex * rowIndex; i++){
+        this.rows = jsonAccessor.queryJsonMapResult(sql, cols2, (pageIndex-1)*rowIndex, rowIndex);
+		
+        /*List<Map<String, Object>> result = jsonAccessor.queryJsonMapResult(sql, cols2, (pageIndex-1)*rowIndex, rowIndex);
+        
+        ListIterator iter = result.listIterator();
+        
+        while(iter.hasNext()){
+        	rows.add(iter.next());
+        }*/
+        
+        /*for(int i = ( pageIndex - 1 ) * rowIndex; i< pageIndex * rowIndex; i++){
 			Map<String, Object> map = new HashMap<String,Object>();
 			map.put("id", i); 
 			map.put("name", 'F');
@@ -77,9 +86,9 @@ public class DataFetchResultAction extends ActionSupport implements
 			map.put("type", 11+i);
 			map.put("description", "1983-11-4");   
 			this.rows.add(map);
-		}
+		}*/
 		
-		total = 200;
+		total = jsonAccessor.getTotalRecords(sql);
 		return SUCCESS;
 	}
 
