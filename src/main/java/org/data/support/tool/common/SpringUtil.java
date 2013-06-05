@@ -56,11 +56,11 @@ public class SpringUtil {
 	
 	/**
 	 * Get bean instance with name, cast to Object
-	 * @param name
+	 * @param untrusted
 	 * @return
 	 */
-	public static Object getBean(String name){
-		return getInstance().getBean(name);
+	public static Object getBean(String name1){
+		return getInstance().getBean(name1);
 	}
 	
 	
