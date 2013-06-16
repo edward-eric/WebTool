@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns="http://www.supporttool.org" 
+targetNamespace="http://www.supporttool.org">
+	<xsd:element name="grids">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="grid" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="grid">
+		<xsd:complexType>
+           <xsd:all>
+				<xsd:element ref="columns"/>
+				<xsd:element ref="dataFetcher" />
+				<xsd:element ref="views" />
+           </xsd:all>
+		   <xsd:attribute name="gridName" type="xsd:string" use="required"/>
+		   <xsd:attribute name="metaClass" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="columns">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="column" maxOccurs="unbounded" minOccurs="1"/>
+			</xsd:sequence>
+          <xsd:attribute name="sortOrder"  type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="column">
+	   	<xsd:complexType>
+			<xsd:attribute name="colName"    type="xsd:string"/>
+			<xsd:attribute name="metaType"   type="xsd:string"/>
+			<xsd:attribute name="dataType"   type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="dataFetcher">
+	    <xsd:complexType>
+			<xsd:all>
+				<xsd:element ref="parameters"/>
+           </xsd:all>
+			<xsd:attribute name="className" type="xsd:string" use="required"/>
+            <xsd:attribute name="id" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+		<xsd:element name="parameters">
+		  <xsd:complexType>
+		   <xsd:sequence>
+		      <xsd:element ref="param" minOccurs="1" maxOccurs="unbounded"/>
+		    </xsd:sequence>
+		  </xsd:complexType>
+	</xsd:element>
+	<xsd:element name="param">
+	   	<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+			<xsd:attribute name="value" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="views">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="view" maxOccurs="unbounded" minOccurs="1"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="view">
+	    <xsd:complexType>
+	       <xsd:sequence>
+	          <xsd:element ref="columnRef" minOccurs="1" maxOccurs="unbounded" />
+	       </xsd:sequence>
+	       <xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+	    </xsd:complexType>
+	</xsd:element>
+	<xsd:element name="columnRef">
+	    <xsd:complexType>
+	       <xsd:attribute name="name" type="xsd:string" use="required"/>
+	       <xsd:attribute name="label" type="xsd:string" use="required"/>
+	    </xsd:complexType>
+	</xsd:element>
+</xsd:schema>
