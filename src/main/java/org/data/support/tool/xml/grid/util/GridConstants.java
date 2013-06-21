@@ -1,8 +1,8 @@
-package org.data.support.tool.xml.grid.mgr;
+package org.data.support.tool.xml.grid.util;
 
-public class GridMetadataBuilder {
-
-	public static final String xsd_file = "/grid/gridmeta.xsd";
+public class GridConstants {
+	
+    public static final String xsd_file = "/grid/gridmeta.xsd";
 	
 	public static final String grid_tag = "grid";
 	public static final String grid_attr_name = "gridName";
@@ -27,6 +27,6 @@ public class GridMetadataBuilder {
 	public static final String grid_views_view_columnRef_attr_name = "name";
 	public static final String grid_views_view_columnRef_attr_label = "label";
 	
-	
+	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
 }
