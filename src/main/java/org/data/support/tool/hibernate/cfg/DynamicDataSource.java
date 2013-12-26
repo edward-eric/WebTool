@@ -15,7 +15,6 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		return CustomerContextHolder.getCustomType();
 	}
 
-	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		return null;
 	}

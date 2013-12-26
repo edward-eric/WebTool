@@ -25,11 +25,6 @@
     <!-- repo -->
 	<repositories>
 		<repository>
-			<id>dtrepository</id>
-			<name>developer</name>
-			<url>http://10.11.102.115/nexus/content/groups/public</url>
-		</repository>
-		<repository>
 		    <id>central</id>
 		    <name>maven2</name>
 		    <url>http://repo1.maven.org/maven2/</url>
@@ -99,21 +94,9 @@
         </dependency>
         
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-orm</artifactId>
-          <version>${spring.version}</version>
-        </dependency>
-        
-        <dependency>
           <groupId>commons-collections</groupId>
           <artifactId>commons-collections</artifactId>
           <version>3.2.1</version>
-        </dependency>
-        
-        <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang</artifactId>
-          <version>2.4.0</version>
         </dependency>
         
         <dependency>
@@ -127,7 +110,6 @@
            <artifactId>commons-pool</artifactId>
            <version>1.0</version>
         </dependency>
-
         
         <dependency>
            <groupId>commons-dbcp</groupId>
@@ -158,13 +140,13 @@
         </dependency>
         
         <dependency>
-           <groupId>com.ibm.db2.jcc</groupId>
-           <artifactId>db2jcc4</artifactId>
-           <version>4.11.88</version>
-        </dependency>
+    		<groupId>ojdbc</groupId>
+    		<artifactId>ojdbc</artifactId>
+    		<version>6</version>
+		</dependency>
         
         <dependency>
-           <groupId>org.dom4j</groupId>
+           <groupId>dom4j</groupId>
            <artifactId>dom4j</artifactId>
            <version>1.6.1</version>
         </dependency>
@@ -194,10 +176,11 @@
 			<version>1.2.14</version>
 		</dependency>
 		
-		<!--dependency>
+		<dependency>
 		    <groupId>net.sf.json-lib</groupId>
 		    <artifactId>json-lib</artifactId>
 		    <version>2.4</version>
+		    <classifier>jdk15</classifier>
 		    <exclusions>
 		       <exclusion>
 		          <groupId>commons-beanutils</groupId>
@@ -212,7 +195,7 @@
 		          <artifactId>commons-collections</artifactId>
 		       </exclusion>
 		    </exclusions>
-		</dependency-->
+		</dependency>
 		
 		<dependency>
 		   <groupId>org.apache.struts</groupId>
@@ -232,12 +215,6 @@
 		   <version>2.3</version>
 		   <scope>provided</scope>
 		</dependency>
-
-    <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>3.6.4.Final</version>
-    </dependency>
 
     </dependencies>
     
