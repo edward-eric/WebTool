@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 public class BeanDefinitionParserDelegate implements ParserDelegate{
 	
 	public BeanDefinitionParserDelegate(Element e){
+		System.out.println("test");
 		
 	}
 
