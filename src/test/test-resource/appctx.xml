@@ -8,21 +8,21 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<bean id="fileProcessor" class="org.data.support.tool.data.xml.processor.impl.FileProcessor">
-	   <property name="fileNames">
-           <value>components.xml</value>
-        </property>
-	</bean>
+<!-- 	<bean id="fileProcessor" class="org.data.support.tool.data.xml.processor.impl.FileProcessor"> -->
+<!-- 	   <property name="fileNames"> -->
+<!--            <value>components.xml</value> -->
+<!--         </property> -->
+<!-- 	</bean> -->
 	
-	<bean id="queryProcessor" class="org.data.support.tool.data.xml.processor.impl.QueryProcessor"/>
+<!-- 	<bean id="queryProcessor" class="org.data.support.tool.data.xml.processor.impl.QueryProcessor"/> -->
 	
-	<bean id="queryProducer" class="org.data.support.tool.data.xml.producer.impl.QueryProducer"/>
+<!-- 	<bean id="queryProducer" class="org.data.support.tool.data.xml.producer.impl.QueryProducer"/> -->
 	
-    <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean">
-        <property name="fileProcessor" ref="fileProcessor"/>
-        <property name="queryProcessor" ref="queryProcessor"/>
-        <property name="queryProducer" ref="queryProducer"/>
-    </bean>
+<!--     <bean id="defMgr" class="org.data.support.tool.data.xml.mgr.DefMgrBean"> -->
+<!--         <property name="fileProcessor" ref="fileProcessor"/> -->
+<!--         <property name="queryProcessor" ref="queryProcessor"/> -->
+<!--         <property name="queryProducer" ref="queryProducer"/> -->
+<!--     </bean> -->
     
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -37,8 +37,23 @@
 	   <constructor-arg ref="dataSource"/>
 	</bean>
 	
-	<bean id="dbExcecutor" class="org.data.support.tool.data.DBExecutor">
+	<bean id="dbExcecutor" class="org.data.support.tool.data.backup.DBExecutor">
 	   <property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+	
+	
+	<bean id="classpathDataReaderResource" class="org.springframework.core.io.ClassPathResource">
+	   <constructor-arg name="path" value="/query"/>
+	</bean>
+	
+	<bean id="regexXMLFilter" class="org.apache.commons.io.filefilter.RegexFileFilter">
+	   <constructor-arg name="pattern" value="[a-zA-Z\d]+.xml"/>
+	</bean>
+	
+	
+	<bean id="queryExecutor" class="org.data.support.tool.data.backup.QueryExecutorImpl" init-method="init">
+	   <property name="regexFilter" ref="regexXMLFilter"/>
+	   <property name="resource" ref="classpathDataReaderResource"/>
 	</bean>
 </beans>
 

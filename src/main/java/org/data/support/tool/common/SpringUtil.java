@@ -13,7 +13,7 @@ public class SpringUtil {
 	/**
 	 * Spring configuration pattern in resource folder
 	 */
-	private static final String _CONFIG_PATTERN = "resource/spring-conf/spring-*.xml";
+	private static final String _CONFIG_PATTERN = "resource/spring-conf/spring-appctx.xml";
 	
 	/**
 	 * Singleton instance

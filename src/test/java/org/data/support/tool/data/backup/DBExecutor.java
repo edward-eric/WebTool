@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class DBExecutor {
+public class DBExecutor implements Executor{
 	private JdbcTemplate jdbcTemp;
 
 	public void setJdbcTemplate(JdbcTemplate jdbcTemp) {
@@ -56,5 +56,16 @@ public class DBExecutor {
 			}
 			return row;
 		}
+	}
+
+	@Override
+	public void callSP(String spString) {
+		jdbcTemp.execute(spString);
+		
+	}
+	
+	
+	public void releaseConnection(){
+		jdbcTemp = null;
 	}
 }

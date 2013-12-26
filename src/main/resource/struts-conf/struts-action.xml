@@ -19,7 +19,7 @@
 		</action>
 		
 		<action name="headers" class="fetchHeaders" method="execute">
-		   <result type="json"/>
+		   <result type="json" />
 		</action>
 
 	</package>

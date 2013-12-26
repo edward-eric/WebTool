@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	
+    <sql-query name="fetchScenrioRunResultsByDemandGroup">
+
+        <![CDATA[
+		select z.* from(
+		select y.prodcount, pdg.name as description, x.productdemandgroupid as itemid, x.optgrossmargin, x.grossmarginchg *100 as grossmarginchg, x.optsales, x.saleschg * 100 as saleschg, 
+				x.optunitvol, x.unitvolchg * 100 as unitvolchg, x.avgunitpricechg * 100 as avgunitpricechg, x.grossmarginrevdiff *100 as grossmarginrevdiff,
+				x.initgrossmargin, x.Initsales, x.InitUnitVol, x.newGMPct * 100 as newGMPct, x.oldGMPct * 100 as oldGMPct,
+				case when coalesce(run.optunitvol, 0) = 0 then null 
+					else x.optunitvol/run.optunitvol * 100 end as newshareofcat,
+				case when coalesce(run.initunitvol,0) = 0 then null
+					else x.initunitvol/run.initunitvol * 100 end as oldshareofcat
+		From(
+			select SUM(srr.OptGrossMargin) AS optgrossmargin, SUM(srr.InitGrossMargin) AS InitGrossMargin,
+			srp.ProductdemandgroupID,
+			srr.ScenarioRunId,
+			CASE WHEN
+                 (CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                    WHEN 0
+                    THEN AVG(srr.InitUnitPrice)
+                    ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                  END) != 0 THEN
+                      (CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.OptUnitPrice)
+                    ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+                 END
+                     - CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                    END) /
+                    CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                        WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                        END
+                  ELSE NULL
+            END AS AvgUnitPriceChg,
+			CASE SUM(srr.InitGrossMargin)
+                WHEN 0
+                THEN 0
+                ELSE (SUM(srr.OptGrossMargin-srr.InitGrossMargin)/ABS(SUM(srr.InitGrossMargin)))
+            END AS grossmarginchg,
+			CASE WHEN SUM(srr.InitGMPctDenom) * SUM(srr.OptGMPctDenom) != 0.0
+               THEN
+                    (SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom))-(SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom))
+            END AS GrossMarginRevDiff,
+            CASE WHEN SUM(srr.OptGMPctDenom) != 0.0 
+               THEN SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom)
+            END as newGMPct,
+            CASE WHEN SUM(srr.InitGMPctDenom) != 0
+            	THEN SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom)
+            END AS oldGMPct,
+			SUM(srr.InitRev) AS Initsales,
+			SUM(srr.OptRev) AS optsales,
+			CASE SUM(srr.InitRev)
+                WHEN 0
+                THEN -2123456789
+                ELSE (SUM(srr.OptRev)-SUM(srr.InitRev))/SUM(srr.InitRev)
+            END AS saleschg,
+			SUM(srr.InitUnitVol) AS InitUnitVol,
+			SUM(srr.OptUnitVol) AS optunitvol,
+			CASE SUM(srr.InitUnitVol)
+            WHEN 0
+            THEN 0
+            ELSE (SUM(srr.OptUnitVol)-SUM(srr.InitUnitVol))/SUM(srr.InitUnitVol)
+			END AS unitvolchg
+			FROM DTOpt.ScenarioRunResult srr
+            inner join DTOpt.ScenarioRunProduct srp
+                on srp.ScenarioRunID = srr.ScenarioRunID
+                and srp.ProductID = srr.ProductID
+			where srr.ScenarioRunId = :scenarioRunId
+			group by srp.productdemandgroupid,srr.ScenarioRunID) as x	
+			left outer join(
+				select count(srp.productid) as prodcount, srp.productdemandgroupid from dtopt.scenariorunproduct srp 
+					where srp.scenariorunid = :scenarioRunId 
+				group by srp.productdemandgroupid
+			)as y	
+			on x.productdemandgroupid=y.productdemandgroupid
+			inner join dtopt.scenariorundemandgroup pdg
+                on pdg.scenariorunid = x.scenariorunid
+                and pdg.productdemandgroupid = x.productdemandgroupid
+			inner join dtopt.scenariorun run
+				on run.scenariorunid = x.scenariorunid) as z
+        ]]>
+    </sql-query>
+	<sql-query name="fetchScenrioRunResultsByBrand">
+
+        <![CDATA[
+		select z.* from(
+		select y.prodcount, srb.name as description, x.productbrandid as itemid, x.optgrossmargin, x.grossmarginchg *100 as grossmarginchg, x.optsales, x.saleschg * 100 as saleschg, 
+				x.optunitvol, x.unitvolchg * 100 as unitvolchg, x.avgunitpricechg * 100 as avgunitpricechg, x.grossmarginrevdiff *100 as grossmarginrevdiff,
+				x.initgrossmargin, x.Initsales, x.InitUnitVol, x.newGMPct * 100 as newGMPct, x.oldGMPct * 100 as oldGMPct,
+				case when coalesce(run.optunitvol, 0) = 0 then null 
+					else x.optunitvol/run.optunitvol * 100 end as newshareofcat,
+				case when coalesce(run.initunitvol,0) = 0 then null
+					else x.initunitvol/run.initunitvol * 100 end as oldshareofcat
+		From(
+			select SUM(srr.OptGrossMargin) AS optgrossmargin, SUM(srr.InitGrossMargin) AS InitGrossMargin,
+			srp.ProductBrandId,
+			srr.ScenarioRunId,
+			CASE WHEN
+                 (CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                    WHEN 0
+                    THEN AVG(srr.InitUnitPrice)
+                    ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                  END) != 0 THEN
+                      (CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.OptUnitPrice)
+                    ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+                 END
+                     - CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                    END) /
+                    CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                        WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                        END
+                  ELSE NULL
+            END AS AvgUnitPriceChg,
+			CASE SUM(srr.InitGrossMargin)
+                WHEN 0
+                THEN 0
+                ELSE (SUM(srr.OptGrossMargin-srr.InitGrossMargin)/ABS(SUM(srr.InitGrossMargin)))
+            END AS grossmarginchg,
+			CASE WHEN SUM(srr.InitGMPctDenom) * SUM(srr.OptGMPctDenom) != 0.0
+               THEN
+                    (SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom))-(SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom))
+            END AS GrossMarginRevDiff,
+            CASE WHEN SUM(srr.OptGMPctDenom) != 0.0 
+               THEN SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom)
+            END as newGMPct,
+            CASE WHEN SUM(srr.InitGMPctDenom) != 0
+            	THEN SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom)
+            END AS oldGMPct,
+			SUM(srr.OptRev) AS optsales,
+			SUM(srr.InitRev) AS Initsales,
+			CASE SUM(srr.InitRev)
+                WHEN 0
+                THEN -2123456789
+                ELSE (SUM(srr.OptRev)-SUM(srr.InitRev))/SUM(srr.InitRev)
+            END AS saleschg,
+			SUM(srr.OptUnitVol) AS optunitvol,
+			SUM(srr.InitUnitVol) AS InitUnitVol,
+			CASE SUM(srr.InitUnitVol)
+            WHEN 0
+            THEN 0
+            ELSE (SUM(srr.OptUnitVol)-SUM(srr.InitUnitVol))/SUM(srr.InitUnitVol)
+			END AS unitvolchg
+			FROM DTOpt.ScenarioRunResult srr
+            inner join DTOpt.ScenarioRunProduct srp
+                on srp.ScenarioRunID = srr.ScenarioRunID
+                and srp.ProductID = srr.ProductID
+			where srr.ScenarioRunId = :scenarioRunId
+			group by srp.ProductBrandId,srr.ScenarioRunID) as x	
+			left outer join(
+				select count(srp.productid) as prodcount, srp.ProductBrandId from dtopt.scenariorunproduct srp 
+					where srp.scenariorunid = :scenarioRunId 
+				group by srp.ProductBrandId
+			)as y	
+			on x.ProductBrandId = y.ProductBrandId
+			inner join dtopt.ScenarioRunBrand srb
+                on srb.scenariorunid = x.scenariorunid
+                and srb.ProductBrandId = x.ProductBrandId
+			inner join dtopt.scenariorun run
+				on run.scenariorunid = x.scenariorunid) as z
+        ]]>
+    </sql-query>
+		<sql-query name="fetchScenrioRunResultsByPG">
+
+        <![CDATA[
+        select z.* from (
+		select y.prodcount, x.productGroupName as description, x.PRODUCTGROUPID as itemid, x.optgrossmargin, x.grossmarginchg *100 as grossmarginchg, x.optsales, x.saleschg * 100 as saleschg, 
+				x.optunitvol, x.unitvolchg * 100 as unitvolchg, x.avgunitpricechg * 100 as avgunitpricechg, x.grossmarginrevdiff *100 as grossmarginrevdiff,
+				x.initgrossmargin, x.Initsales, x.InitUnitVol, x.newGMPct * 100 as newGMPct, x.oldGMPct * 100 as oldGMPct,
+				case when coalesce(run.optunitvol, 0) = 0 then null 
+					else x.optunitvol/run.optunitvol * 100 end as newshareofcat,
+				case when coalesce(run.initunitvol,0) = 0 then null
+					else x.initunitvol/run.initunitvol * 100 end as oldshareofcat
+		From(
+			select SUM(srr.OptGrossMargin) AS optgrossmargin, SUM(srr.InitGrossMargin) AS InitGrossMargin,
+			srpg.PRODUCTGROUPID,
+			max(srpg.name) as productGroupName,
+			srr.ScenarioRunId,
+			CASE WHEN
+                 (CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                    WHEN 0
+                    THEN AVG(srr.InitUnitPrice)
+                    ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                  END) != 0 THEN
+                      (CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.OptUnitPrice)
+                    ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+                 END
+                     - CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                    END) /
+                    CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                        WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                        END
+                  ELSE NULL
+            END AS AvgUnitPriceChg,
+			CASE SUM(srr.InitGrossMargin)
+                WHEN 0
+                THEN 0
+                ELSE (SUM(srr.OptGrossMargin-srr.InitGrossMargin)/ABS(SUM(srr.InitGrossMargin)))
+            END AS grossmarginchg,
+			CASE WHEN SUM(srr.InitGMPctDenom) * SUM(srr.OptGMPctDenom) != 0.0
+               THEN
+                    (SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom))-(SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom))
+            END AS GrossMarginRevDiff,
+            CASE WHEN SUM(srr.OptGMPctDenom) != 0.0 
+               THEN SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom)
+            END as newGMPct,
+            CASE WHEN SUM(srr.InitGMPctDenom) != 0
+            	THEN SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom)
+            END AS oldGMPct,
+			SUM(srr.OptRev) AS optsales,
+			SUM(srr.InitRev) AS Initsales,
+			CASE SUM(srr.InitRev)
+                WHEN 0
+                THEN -2123456789
+                ELSE (SUM(srr.OptRev)-SUM(srr.InitRev))/SUM(srr.InitRev)
+            END AS saleschg,
+			SUM(srr.OptUnitVol) AS optunitvol,
+			SUM(srr.InitUnitVol) AS InitUnitVol,
+			CASE SUM(srr.InitUnitVol)
+            WHEN 0
+            THEN 0
+            ELSE (SUM(srr.OptUnitVol)-SUM(srr.InitUnitVol))/SUM(srr.InitUnitVol)
+			END AS unitvolchg
+			FROM DTOpt.ScenarioRunResult srr
+            inner join DTOpt.ScenarioRunProduct srp
+                on srp.ScenarioRunID = srr.ScenarioRunID
+                and srp.ProductID = srr.ProductID
+            inner join DTOpt.ScenarioRunLocation srl
+                on srl.ScenarioRunID = srr.ScenarioRunID
+                and srl.LocationID = srr.LocationID
+            inner join DTOpt.ScenarioRunProductLocationGroupDetail srplgd
+                on srplgd.ScenarioRunId = srp.ScenarioRunId
+                and srplgd.ProductId = srp.ProductId
+                and (srplgd.LocationId = srl.LocationId OR srplgd.LocationId = -1)
+            inner join SESSION.ScenarioRunProductGroup srpg 
+                on srpg.PRODUCTGROUPID=srplgd.PRODUCTGROUPID
+                and srpg.ScenarioRunID = srr.ScenarioRunID
+			where srr.ScenarioRunId = :scenarioRunId
+			group by srpg.PRODUCTGROUPID,srr.ScenarioRunID) as x
+			left outer join(
+				select count(srp.productid) as prodcount, srplgd.PRODUCTGROUPID from DTOpt.ScenarioRunProductLocationGroupDetail srplgd
+                	inner join dtopt.scenariorunproduct srp 
+                		on srp.scenariorunid=srplgd.scenariorunid 
+                		and srp.productid=srplgd.productid
+					where srplgd.scenariorunid = :scenarioRunId 
+				group by srplgd.PRODUCTGROUPID
+			)as y
+			on x.PRODUCTGROUPID = y.PRODUCTGROUPID
+			inner join dtopt.scenariorun run
+				on run.scenariorunid = x.scenariorunid) z
+        ]]>
+    </sql-query>
+    
+    <sql-query name="loadProductsByZone">
+
+        <![CDATA[
+    select z.* from (
+    select   
+    x.scenariorunid AS runID,
+    srp.name AS description,
+    srp.UPC AS UPC,
+    x.minZone AS zone,
+    srp.LineGroup AS line,
+    srp.VolOfMeasure AS VOM,
+    srp.UnitOfMeasure AS UOM,
+    pdg.name AS demandGroup,
+    srb.name AS brand,
+    srp.isprepriced AS prePrice,
+    case when x.minIsLocked != x.maxIsLocked then 1 else x.minIsLocked end AS locked,
+    x.maxIsZoneException AS zoneOverride,
+
+    x.AvgInitUnitPrice * x.InitMultiple as oldPrice,
+    x.AvgOptUnitPrice * x.optMultiple as newPrice,
+    x.AvgCurrentRetailPrice * x.CurrentRetailMultiple as currentPrice,
+    x.InitMultiple as initMultiple,
+    x.optMultiple as newMultiple,
+    x.CurrentRetailMultiple as currentMultiple,
+
+    x.AvgOptUnitCost as unitCost,
+    x.InitZoneMode as initModePrice,
+    x.OptZoneMode AS optModePrice,
+    x.CurrentZoneMode as currentModePrice,
+
+    x.InitUnitVol as oldVol,
+    x.OptUnitVol as newVol,
+    x.VolChg * 100 as unitVolChg,
+
+    (case when coalesce(dgsr.TotalOfOldSales,0) = 0 or coalesce(x.InitUnitVol,0) = 0  
+              then NULL 
+              else x.InitUnitVol/dgsr.TotalOfOldSales 
+    END) * 100 as pctShareOfOldVol,
+    (case WHEN coalesce(dgsr.TotalOfNewSales,0) = 0 or coalesce(x.OptUnitVol,0) = 0 
+              then NULL 
+              else x.OptUnitVol/dgsr.TotalOfNewSales 
+    END) * 100 as pctShareOfNewVol,
+    (case when coalesce(dgsr.TotalOfCurrentSales,0) = 0 or coalesce(x.baseOptVol,0) = 0 
+              then NULL 
+              else x.baseOptVol/dgsr.TotalOfCurrentSales 
+    END) * 100 as pctShareOfCurVol,
+
+    case when coalesce(dgsr.TotalOfOldSales,0) = 0 or coalesce(x.InitUnitVol,0) = 0 
+              then NULL 
+              else dgsr.OLDVOLRANK  
+    END as rankOfOldVol,
+    case when coalesce(dgsr.TotalOfNewSales,0) = 0 or coalesce(x.OptUnitVol,0) = 0  
+              then NULL 
+              else dgsr.NEWVOLRANK  
+    END as rankOfNewVol,
+    case when coalesce(dgsr.TotalOfCurrentSales,0) = 0 or coalesce(x.baseOptVol,0) = 0 
+              then NULL 
+              else dgsr.CURRENTVOLRANK  
+    END as rankOfCurVol,
+    (case when coalesce(dgsr.TotalOfNewSales,0) = 0 or coalesce(x.OptUnitVol,0) = 0  
+              then NULL 
+              else dgsr.NEWVOLRANK  
+    END) - 
+    (case when coalesce(dgsr.TotalOfOldSales,0) = 0 or coalesce(x.InitUnitVol,0) = 0 
+              then NULL 
+              else dgsr.OLDVOLRANK  
+    END) as changeOfRank,
+
+    x.AvgUnitPriceChg * 100 AS avgunitpricechg,
+
+    x.InitRev as initSales,
+    x.OptRev as optsales,
+    x.RevDiff as salesChgDr,
+    x.RevChg * 100 as saleschg,
+
+
+    (case when x.InitGMPctDenom != 0 
+              then x.InitGrossMargin/x.InitGMPctDenom 
+    end) * 100 as oldGmPct,
+    (CASE WHEN x.OptGMPctDenom != 0 
+              THEN x.OptGrossMargin/x.OptGMPctDenom 
+    END) * 100 as newGMPct,
+    x.InitGrossMargin AS initGm,
+
+    x.OptGrossMargin AS optgrossmargin,
+
+    x.GrossMarginDiff AS gmChg,
+    x.GrossMarginChg * 100 AS grossmarginchg,
+    x.initUnitGM AS initUnitGm,
+    x.optUnitGM AS optUnitGm,
+    
+    x.GrossMarginRevDiff * 100 AS grossmarginrevdiff,
+
+    x.maxCompName1 as pComp,
+    x.avgCompPrice1 as pCompPrice,
+    x.AvgOptUnitPrice -x.avgCompPrice1 as newToPCompDiff,
+    (case when x.avgCompPrice1 != 0 
+              then ( x.AvgOptUnitPrice /double(x.avgCompPrice1)  ) -1  
+    end) * 100 as newToPCompDiffPct,
+
+    x.maxCompName2 as sComp,
+    x.avgCompPrice2 as sCompPrice,
+    x.AvgOptUnitPrice -x.avgCompPrice2 as newToSCompDiff,
+    (case when x.avgCompPrice2 != 0 
+              then ( x.AvgOptUnitPrice /double(x.avgCompPrice2)  ) -1  
+    end) * 100 as newToSCompDiffPct,
+
+    x.maxCompName3 as tComp,
+    x.avgCompPrice3 as tCompPrice,
+    x.AvgOptUnitPrice -x.avgCompPrice3 as newToTCompDiff,
+    (case when x.avgCompPrice3 != 0 
+              then ( x.AvgOptUnitPrice /double(x.avgCompPrice3)  ) -1  
+    end) * 100 as newToTCompDiffPct,
+
+    srp.Attribute0 as skuAttr0,
+    srp.Attribute1 as skuAttr1,
+    srp.Attribute2 as skuAttr2,
+    srp.Attribute3 as skuAttr3,
+    srp.Attribute4 as skuAttr4,
+    srp.Attribute5 as skuAttr5,
+    srp.Attribute6 as skuAttr6,
+    srp.Attribute7 as skuAttr7,
+    srp.Attribute8 as skuAttr8,
+    srp.Attribute9 as skuAttr9,
+    x.scenariorunresultid as resultId
+
+    FROM DTOpt.ScenarioRunProduct srp
+
+    inner join
+    ( select srp.scenariorunid,
+        min(srr.ProductID) as ProductID,
+        min(srr.scenariorunresultid) as scenariorunresultid,
+        min (xc.CompetitorID) as CompetitorID,
+        min(COALESCE(xc.SuggestedMultiple, 1)) minCompMultiple,
+        max(COALESCE(xc.SuggestedMultiple, 1)) maxCompMultiple,
+       
+        CASE Sum(CASE WHEN xc.unitprice IS NOT NULL THEN Coalesce(srr.optunitvol, 0) END) 
+                 WHEN 0 THEN Avg(xc.unitprice) 
+                 ELSE Sum(Coalesce(srr.optunitvol, 0.00000001) * xc.unitprice) / Sum(CASE WHEN xc.unitprice IS NOT NULL THEN Coalesce(srr.optunitvol, 0.00000001) END) 
+        END AS Compprice,
+        MIN(xc.UnitPrice) AS MinCompPrice,
+        max(VWsrrc.Competitor1Name) as maxCompName1,
+        avg(VWsrrc.CompPrice1) as avgCompPrice1,
+        max(VWsrrc.Competitor2Name) as maxCompName2,
+        avg(VWsrrc.CompPrice2) as avgCompPrice2,
+        max(VWsrrc.Competitor3Name) as maxCompName3,
+        avg(VWsrrc.CompPrice3) as avgCompPrice3,
+        MAX(xc.StartDate) AS StartDate,
+
+        min(srl.zone) as minZone,
+
+        min(coalesce(srr.isLocked, 2)) as minIsLocked,
+        max(coalesce(srr.isLocked, 2)) as maxIsLocked,
+        min(coalesce(srr.isUserSelected, 2)) as minIsUserSelected,
+        max(coalesce(srr.isUserSelected, 2)) as maxIsUserSelected,
+        MIN(COALESCE( srr.OverOptMultiple, 1)),
+        CASE when min(srr.OverOptMultiplePrice) != max(srr.OverOptMultiplePrice)
+             then 1 else min(srr.OverOptMultiplePrice) END as OverOptMultiplePrice,
+        AVG(srr.OverOptUnitPrice) as OverOptUnitPrice,
+        AVG(srr.InitUnitPrice) as InitUnitPrice,
+        AVG(srr.OptUnitPrice) as OptUnitPrice,
+
+        CASE WHEN SUM( 
+                    CASE WHEN srr.OverOptUnitPrice is not null 
+                    THEN COALESCE(srr.OptUnitVol, 0) ELSE 0 END) = 0
+         THEN AVG(srr.OverOptUnitPrice)
+         ELSE SUM(srr.OverOptUnitPrice * COALESCE(srr.OptUnitVol,0.00000001))/
+                SUM(CASE WHEN srr.OverOptUnitPrice is not null THEN COALESCE(srr.OptUnitVol, 0.00000001) END)
+         END AS AvgOverOptUnitPrice,
+
+
+        CASE WHEN min(srr.OptMultiple) != max(srr.OptMultiple)
+                THEN 1 ELSE min(srr.OptMultiple)
+        END as OptMultiple,
+
+        CASE WHEN min(srr.InitMultiple) != max(srr.InitMultiple)
+                THEN 1 ELSE min(srr.InitMultiple)
+        END as InitMultiple,
+
+        CASE WHEN min(srr.currentretailmultiple) != max(srr.currentretailmultiple)
+                THEN 1 ELSE min(srr.currentretailmultiple)
+        END as CurrentRetailMultiple,
+
+        CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                THEN AVG(srr.InitUnitPrice)
+                ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+        END AS AvgInitUnitPrice,
+
+        CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                THEN AVG(srr.OptUnitPrice)
+                ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+        END AS AvgOptUnitPrice,
+
+        CASE WHEN Sum(CASE WHEN srr.currentretailprice IS NOT NULL THEN Coalesce(srr.optunitvol, 0) END) = 0
+                THEN AVG(srr.currentretailprice)
+                ELSE SUM(double(srr.currentretailprice) * COALESCE(srr.OptUnitVol, 0.00000001))/
+                SUM(CASE WHEN COALESCE(srr.currentretailprice, 0) != 0 THEN COALESCE(srr.OptUnitVol, 0.00000001) END)
+        END as AvgCurrentRetailPrice,
+
+        CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.OptUnitPrice)
+                    ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+                END
+                - CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.InitUnitPrice)
+                    ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+               END AS AvgUnitPriceDiff,
+        CASE WHEN
+                 (CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                    WHEN 0
+                    THEN AVG(srr.InitUnitPrice)
+                    ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                  END) != 0 THEN
+                      (CASE SUM(COALESCE(srr.OptUnitVol, 0)) WHEN 0
+                    THEN AVG(srr.OptUnitPrice)
+                    ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))
+                 END
+                     - CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                    END) /
+                    CASE SUM(COALESCE(srr.InitUnitVol, 0))
+                        WHEN 0
+                        THEN AVG(srr.InitUnitPrice)
+                        ELSE SUM(srr.InitUnitPrice * COALESCE(srr.initunitvol, 0.00000001))/SUM(COALESCE(srr.initunitvol, 0.00000001))
+                        END
+                  ELSE NULL
+                END AS AvgUnitPriceChg,
+        CASE COALESCE(Sum(CASE WHEN srr.currentretailprice IS NOT NULL THEN Coalesce(srr.optunitvol, 0) END), 0) WHEN 0
+               THEN AVG(srr.OptUnitPrice) - AVG(srr.CurrentRetailPrice)
+               ELSE SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001)) -
+                       SUM(double(srr.currentretailprice) * COALESCE(srr.OptUnitVol, 0.00000001))/
+                       SUM(CASE WHEN COALESCE(srr.currentretailprice, 0) = 0 THEN null ELSE COALESCE(srr.OptUnitVol, 0.00000001) END)
+               END AS AvgNewToCurrentPriceDiff,
+        CASE COALESCE(Sum(CASE WHEN srr.currentretailprice IS NOT NULL THEN Coalesce(srr.optunitvol, 0) END), 0) WHEN 0
+               THEN AVG(srr.OptUnitPrice) / AVG(srr.CurrentRetailPrice) - 1
+               ELSE (
+                       case when SUM(double(srr.currentretailprice) * COALESCE(srr.OptUnitVol, 0.00000001))/
+                           SUM(CASE WHEN COALESCE(srr.currentretailprice, 0) = 0 THEN null ELSE COALESCE(srr.OptUnitVol, 0.00000001) END) != 0
+                       then SUM(srr.OptUnitPrice * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001))/
+                           (
+                           SUM(double(srr.currentretailprice) * COALESCE(srr.OptUnitVol, 0.00000001))/
+                           SUM(CASE WHEN COALESCE(srr.currentretailprice, 0) = 0 THEN null ELSE COALESCE(srr.OptUnitVol, 0.00000001) END)
+                           ) - 1
+                       end
+                       )
+               END AS AvgNewToCurrentPriceChg,
+        CASE SUM(COALESCE(srr.InitEquivVol, 0)) WHEN 0
+                    THEN AVG(srr.InitEquivPrice)
+                    ELSE SUM(srr.InitEquivPrice * COALESCE(srr.InitEquivVol, 0.00000001))/SUM(COALESCE(srr.InitEquivVol, 0.00000001))
+               END AS AvgInitEquivPrice,
+        CASE SUM(COALESCE(srr.OptEquivVol, 0)) WHEN 0
+                    THEN AVG(srr.OptEquivPrice)
+                    ELSE SUM(srr.OptEquivPrice * COALESCE(srr.OptEquivVol, 0.00000001))/SUM(COALESCE(srr.OptEquivVol, 0.00000001))
+               END AS AvgOptEQuivPrice,
+        CASE SUM(COALESCE(srr.OptEquivVol, 0)) WHEN 0
+                        THEN AVG(srr.OptEquivPrice)
+                        ELSE SUM(srr.OptEquivPrice * COALESCE(srr.OptEquivVol, 0.00000001))/SUM(COALESCE(srr.OptEquivVol, 0.00000001))
+                    END
+                    - CASE SUM(COALESCE(srr.InitEquivVol, 0)) WHEN 0
+                        THEN AVG(srr.InitEquivPrice)
+                        ELSE SUM(srr.InitEquivPrice * COALESCE(srr.InitEquivVol, 0.00000001))/SUM(COALESCE(srr.InitEquivVol, 0.00000001))
+                END AS AvgEquivPriceDiff,
+
+        CASE SUM(COALESCE(srr.InitUnitVol, 0)) WHEN 0
+                THEN AVG(coalesce(srr.oldcost,srr.cost))
+                ELSE SUM(coalesce(srr.oldcost,srr.cost) * COALESCE(srr.InitUnitVol, 0.00000001) )/
+                    SUM(COALESCE(srr.InitUnitVol, 0.00000001) )
+            END AS AvgInitUnitCost,
+        CASE SUM(COALESCE(srr.OptUnitVol, 0))
+                WHEN 0 THEN AVG(srr.cost)
+                ELSE SUM(srr.cost * COALESCE(srr.OptUnitVol, 0.00000001))/SUM(COALESCE(srr.OptUnitVol, 0.00000001) )
+            END AS AvgOptUnitCost,
+
+        SUM(srr.InitUnitVol*srr.cost) AS InitCost,
+        SUM(srr.OptUnitVol*srr.cost) AS OptCost,
+        SUM(srr.OptunitVol*srr.cost)-SUM(srr.InitUnitVol*srr.cost) AS CostDiff,
+        CASE SUM(srr.InitUnitVol*srr.cost) WHEN 0
+                    THEN 0
+                    ELSE (SUM(srr.OptUnitVol*srr.cost)-SUM(srr.InitUnitVol*srr.cost)) / SUM(srr.InitUnitVol*srr.cost)
+                END AS CostChg,
+
+        SUM(srr.InitEquivVol) AS InitEquivVol,
+        SUM(srr.OptEquivVol) AS OptEquivVol,
+        SUM(srr.OptEquivVol)-SUM(srr.InitEquivVol) AS EquivVolDiff,
+        CASE SUM(srr.InitEquivVol)
+            WHEN 0
+            THEN 0
+            ELSE (SUM(srr.OptEquivVol)-SUM(srr.InitEquivVol))/SUM(srr.InitEquivVol)
+        END AS VolChg,
+
+
+        SUM(srr.InitUnitVol) AS InitUnitVol,
+        SUM(srr.OptUnitVol) AS OptUnitVol,
+        SUM(srr.OptUnitVol)-SUM(srr.InitUnitVol) AS UnitVolDiff,
+
+        SUM(srr.InitRev) AS InitRev,
+        SUM(srr.OptRev) AS OptRev,
+        SUM(srr.OptRev)-SUM(srr.InitRev) AS RevDiff,
+        SUM(srr.InitVatRev) AS InitVatRev,
+        SUM(srr.OptVatRev) AS OptVatRev,
+        CASE SUM(srr.InitRev)
+            WHEN 0
+            THEN -2123456789
+            ELSE (SUM(srr.OptRev)-SUM(srr.InitRev))/SUM(srr.InitRev)
+        END AS RevChg,
+
+        #function_unitGM_clause#,
+
+        SUM(srr.OptGrossMargin)-SUM(srr.InitGrossMargin) AS GrossMarginDiff,
+        CASE SUM(srr.InitGrossMargin)
+            WHEN 0
+            THEN 0
+            ELSE (SUM(srr.OptGrossMargin-srr.InitGrossMargin)/ABS(SUM(srr.InitGrossMargin)))
+        END AS GrossMarginChg,
+        
+        CASE WHEN SUM(srr.InitGMPctDenom) * SUM(srr.OptGMPctDenom) != 0.0
+             THEN
+             (SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom))-(SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom))
+        END AS GrossMarginRevDiff,
+        
+        SUM(srr.InitGrossMargin) AS InitGrossMargin,
+        SUM(srr.OptGrossMargin) AS OptGrossMargin,
+
+        CASE WHEN SUM(srr.InitGMPctDenom) != 0 THEN SUM(srr.InitGrossMargin)/SUM(srr.InitGMPctDenom) END AS InitGrossMarginRev,
+        CASE WHEN SUM(srr.OptGMPctDenom) != 0 THEN SUM(srr.OptGrossMargin)/SUM(srr.OptGMPctDenom) END AS OptGrossMarginRev,
+
+        SUM(srr.InitGMPctDenom) as InitGMPctDenom,
+        SUM(srr.OptGMPctDenom) as OptGMPctDenom,
+
+        MIN(COALESCE(srr.IsZoneException, 0)) as minIsZoneException,
+        MAX(COALESCE(srr.IsZoneException, 0)) as maxIsZoneException,
+
+        min(coalesce(srr.TrueOptModePrice, srr.OptModePrice)) AS OptZoneMode,
+        min(coalesce(srr.TrueInitModePrice, srr.InitModePrice)) AS InitZoneMode,
+        min(srr.TrueCurrentModePrice) AS CurrentZoneMode,
+
+        srl.zoneid AS zoneID,
+
+	    SUM(srr.BaseOptVol) AS BaseOptVol,
+	    SUM(srr.BaseInitVol) AS BaseInitVol
+
+        FROM DTOpt.ScenarioRunResult srr
+        inner join DTOpt.ScenarioRunProduct srp
+            on srp.ScenarioRunID = srr.ScenarioRunID
+            and srp.ProductID = srr.ProductID
+        inner join DTOpt.ScenarioRunLocation srl
+            on srl.ScenarioRunID = srr.ScenarioRunID
+            and srl.LocationID = srr.LocationID
+
+        #join_productGroup_clause#
+        
+        #join_compprice_clause#
+        
+        LEFT OUTER JOIN SESSION.VWsrrc VWsrrc
+        ON VWsrrc.ScenarioRunResultId = srr.ScenarioRunResultId
+        where srr.ScenarioRunID = :scenarioRunId
+
+        #inner_where_clause#
+        group by srp.productid,
+                srl.zoneid,
+              srp.ScenarioRunID
+       ) as X
+          on  srp.productid = x.productid
+       inner join dtopt.scenariorunbrand srb
+            on srb.productbrandid = srp.productbrandid
+            and srb.scenariorunid = srp.scenariorunid
+        inner join dtopt.scenariorundemandgroup pdg
+            on pdg.scenariorunid = srp.scenariorunid
+            and pdg.productdemandgroupid = srp.productdemandgroupid
+        inner join SESSION.DemandGroupSalesWithRank dgsr
+            on dgsr.productdemandgroupid = pdg.productdemandgroupid 
+            and dgsr.zoneid = x.zoneid
+            and dgsr.productid = srp.productid
+		left outer join DTopt.productcategory pc
+		on pc.productcategoryid = srp.productcategoryid
+        left outer join dtopt.Competitor c 
+            on c.CompetitorID = x.CompetitorID 
+        left outer join dtopt.ScenarioRunProductZone srpz
+            on srpz.ScenarioRunID = srp.ScenarioRunID
+            and srpz.ProductID = srp.ProductID
+            and srpz.ZoneID = x.ZoneID
+        where srp.scenariorunid = :scenarioRunId
+        
+        #where_clause#) z
+        ]]>
+    </sql-query>
+</hibernate-mapping>

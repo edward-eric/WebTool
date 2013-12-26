@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  
+  <session-factory>
+  
+  <!--
+connection profiles  
+DB2	org.hibernate.dialect.DB2Dialect
+DB2 AS/400	org.hibernate.dialect.DB2400Dialect
+DB2 OS390	org.hibernate.dialect.DB2390Dialect
+PostgreSQL	org.hibernate.dialect.PostgreSQLDialect
+MySQL	org.hibernate.dialect.MySQLDialect
+MySQL with InnoDB	org.hibernate.dialect.MySQLInnoDBDialect
+MySQL with MyISAM	org.hibernate.dialect.MySQLMyISAMDialect
+Oracle (any version)	org.hibernate.dialect.OracleDialect
+Oracle 9i	org.hibernate.dialect.Oracle9iDialect
+Oracle 10g	org.hibernate.dialect.Oracle10gDialect
+Sybase	org.hibernate.dialect.SybaseDialect
+Sybase Anywhere	org.hibernate.dialect.SybaseAnywhereDialect
+Microsoft SQL Server	org.hibernate.dialect.SQLServerDialect
+SAP DB	org.hibernate.dialect.SAPDBDialect
+Informix	org.hibernate.dialect.InformixDialect
+HypersonicSQL	org.hibernate.dialect.HSQLDialect
+Ingres	org.hibernate.dialect.IngresDialect
+Progress	org.hibernate.dialect.ProgressDialect
+Mckoi SQL	org.hibernate.dialect.MckoiDialect
+Interbase	org.hibernate.dialect.InterbaseDialect
+Pointbase	org.hibernate.dialect.PointbaseDialect
+FrontBase	org.hibernate.dialect.FrontbaseDialect
+Firebird	org.hibernate.dialect.FirebirdDialect 
+   -->
+   
+   <!-- 
+hibernate.c3p0.min_size=5
+hibernate.c3p0.max_size=20
+hibernate.c3p0.timeout=1800
+hibernate.c3p0.max_statements=50
+    -->
+    
+    <!-- JDBC connection pool (use the built-in) -->
+    <property name="connection.pool_size">25</property>
+
+    <!-- Enable Hibernate's automatic session context management -->
+    <property name="current_session_context_class">thread</property>
+    
+    <!-- Disable the second-level cache  -->
+    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    
+    <!-- The classname of a Hibernate org.hibernate.dialect.Dialect 
+    which allows Hibernate to generate SQL optimized for a particular relational database.-->
+    <property name="dialect">org.hibernate.dialect.DB2Dialect</property>
+    <!-- Write all SQL statements to console. This is an alternative to setting the log category org.hibernate.SQL to debug. -->
+    <property name="show_sql">false</property>
+    <!-- Pretty print the SQL in the log and console. e.g. true | false -->
+    <property name="hibernate.format_sql">true</property>
+    <!-- Sets a maximum "depth" for the outer join fetch tree for single-ended associations (one-to-one, many-to-one). 
+    A 0 disables default outer join fetching.
+     -->
+    <property name="hibernate.max_fetch_depth">0</property>
+    <!-- Sets a default size for Hibernate batch fetching of associations. -->
+    <property name="hibernate.default_batch_fetch_size">4</property>
+    <!-- If enabled, Hibernate will collect statistics useful for performance tuning. e.g. true | false -->
+    <property name="hibernate.generate_statistics">true</property>
+    
+    <!-- A non-zero value determines the JDBC fetch size (calls Statement.setFetchSize()).-->
+    <property name="hibernate.jdbc.fetch_size">100</property>
+    <!-- A non-zero value enables use of JDBC2 batch updates by Hibernate. e.g. recommended values between 5 and 30-->
+    <property name="hibernate.jdbc.batch_size">50</property>
+    
+    <!-- Enables use of JDBC2 scrollable resultsets by Hibernate. 
+    This property is only necessary when using user-supplied JDBC connections. 
+    Hibernate uses connection metadata otherwise. e.g. true | false -->
+    <property name="hibernate.jdbc.use_scrollable_resultset">true</property>
+    
+    <!-- Sets the JDBC transaction isolation level. 
+    Check java.sql.Connection for meaningful values, but note that most databases do not support all isolation levels 
+    and some define additional, non-standard isolations. -->
+    <property name="hibernate.connection.isolation">1</property>
+    
+   </session-factory>
+</hibernate-configuration>

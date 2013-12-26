@@ -4,7 +4,6 @@ public class GridViewColumn {
 	
 	private String name;
 	private String label;
-	
 	private boolean visible = false;
 	
 	public GridViewColumn(String name, String label, boolean visible)
@@ -12,6 +11,11 @@ public class GridViewColumn {
 		this.name = name;
 		this.label = label;
 		this.visible = visible;
+	}
+	
+	public GridViewColumn(String name, String label){
+		this.name = name;
+		this.label = label;
 	}
 
 	public String getName() {

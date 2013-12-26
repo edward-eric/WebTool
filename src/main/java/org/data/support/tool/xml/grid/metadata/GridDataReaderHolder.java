@@ -1,48 +1,50 @@
 package org.data.support.tool.xml.grid.metadata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GridDataReaderHolder {
 	
-	private String className;
-	private Map<String, String> params;
+	
 	private String id;
-	private List<GridDataColumn> columns;
+	private String queryClass;
+	private GridDataQuery dataQuery;
+	private Map<String, GridDataColumn> columns;
 	
-	public GridDataReaderHolder(String id, String className){
+	public GridDataReaderHolder(String id, String queryClass){
 		this.id = id;
-		this.className = className;
-		this.params = new HashMap<String, String>();
-		this.columns = new ArrayList<GridDataColumn>();
-	}
-	
-	public String getClassName(){
-		return className;
-	}
-	
-	public Map<String, String> getParams(){
-		return params;
-	}
-	
-	public void addParam(String key, String value)
-	{
-		params.put(key, value);
-	}
-	
-	public String getId(){
-		return id;
-	}
-	
-	public void addDataColumn(GridDataColumn column)
-	{
-		columns.add(column);
+		this.queryClass = queryClass;
+		this.columns = new HashMap<String, GridDataColumn>();
 	}
 
-	public List<GridDataColumn> getColumns() {
+	public String getId() {
+		return id;
+	}
+
+	public String getQueryClass() {
+		return queryClass;
+	}
+
+	public GridDataQuery getDataQuery() {
+		return dataQuery;
+	}
+
+	public void setDataQuery(GridDataQuery dataQuery) {
+		this.dataQuery = dataQuery;
+	}
+
+	public Map<String, GridDataColumn> getColumns() {
 		return columns;
 	}
+
+	public void addColumn(GridDataColumn column){
+		this.columns.put(column.getName(), column);
+	}
+	
+	public void removeColumn(GridDataColumn column){
+		this.columns.remove(column.getName());
+	}
+	
+	
 
 }

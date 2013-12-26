@@ -1,0 +1,58 @@
+<grids xmlns="http://www.supporttool.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.supporttool.org ../gridmeta.xsd ">
+
+	<grid gridName="summaryView" metaClass="/price">
+		<dataFetcher id="productSummary" className="com.demandtec.platform.grid.hibernate.NameValueGroupQueryDataFetcher">
+				<parameters>
+					<param name="target_model" value="com.demandtec.price.model.ScenarioRunReportData"/>
+					<param name="query_name"   value="fetchScenrioRunResultsByPG"/>
+					<param name="nvg_file"     value="price-runresult-nvg.xml"/>
+					<param name="pre_execute"  value="call DtOpt.ProductGroupInScenario(:_sp_scenarioId, :scenarioRunId, 1)" />
+					<param name="post_execute"  value="drop table SESSION.ScenarioRunProductGroup" />
+				</parameters>
+		</dataFetcher>
+       	<columns>
+			<column colName="prodcount" metaType="/common#int" dataType="Integer"/>
+			<column colName="description" metaType="/common#string" dataType="String" />
+			<column colName="optgrossmargin" metaType="/common#currency" dataType="Double" />
+			<column colName="grossmarginchg" metaType="percentWithZero" dataType="Double" />
+			<column colName="optsales" metaType="/common#currency" dataType="Double" />
+			<column colName="saleschg" metaType="percentWithZero" dataType="Double" />
+			<column colName="optunitvol" metaType="/common#int" dataType="Double" />
+			<column colName="unitVolChg" metaType="percentWithZero" dataType="Double" />
+			<column colName="avgunitpricechg" metaType="percentWithZero" dataType="Double" />
+			<column colName="grossmarginrevdiff" metaType="percentWithZero" dataType="Double" />
+			<column colName="initgrossmargin" metaType="/common#currency" dataType="Double" />
+			<column colName="initsales" metaType="/common#currency" dataType="Double" />
+			<column colName="initunitvol" metaType="/common#int" dataType="Double" />
+			<column colName="itemid" metaType="/common#int" dataType="Long"/>
+			<column colName="newGMPct" metaType="percentWithZero" dataType="Double" />
+			<column colName="oldGMPct" metaType="percentWithZero" dataType="Double" />
+			<column colName="newshareofcat" metaType="percentWithZero" dataType="Double" />
+			<column colName="oldshareofcat" metaType="percentWithZero" dataType="Double" />
+       	</columns>
+       	<views>
+            <view name="summaryView">
+                <columnRef name="prodcount" label="LIS___PRODUCTS" />
+                <columnRef name="description" label="price_label_dynamic_display_header" />
+                <columnRef name="initgrossmargin" label="LIS_OLD_GMCUR" />
+                <columnRef name="optgrossmargin" label="LIS_NEW_GMCUR" />
+                <columnRef name="initunitvol" label="LIS_OLD_VOL" />
+                <columnRef name="optunitvol" label="LIS_NEW_VOL" />
+                <columnRef name="initsales" label="LIS_OLD_SALESCUR" />
+                <columnRef name="optsales" label="LIS_NEW_SALESCUR" />
+                <columnRef name="oldGMPct" label="LIS_OLD_GMPCT" />
+                <columnRef name="newGMPct" label="LIS_NEW_GMPCT" />
+                <columnRef name="oldshareofcat" label="LIS_OLD_SHARE_CAT" />
+                <columnRef name="newshareofcat" label="LIS_NEW_SHARE_CAT" />
+                <columnRef name="grossmarginchg" label="LIS_GMCUR_CHGPCT" />
+                <columnRef name="saleschg" label="LIS_SALES_CHGPCT" />
+                <columnRef name="unitVolChg" label="LIS_VOL_CHGPCT" />
+                <columnRef name="avgunitpricechg" label="LIS_PRICE_CHG_PCT" />
+                <columnRef name="grossmarginrevdiff" label="LIS_GMPCT_CHG" />
+            </view>
+        </views>
+	</grid>
+
+	
+</grids>

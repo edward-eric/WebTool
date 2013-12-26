@@ -2,27 +2,20 @@ package org.data.support.tool.xml.grid.metadata;
 
 public class GridDataColumn {
 	
-	private final String columnName;
-	private final String metaType;
-	private final String dataType;
+	private final String name;
+	private final String type;
 	
-	public GridDataColumn(String name, String meta, String type)
-	{
-		columnName = name;
-		metaType = meta;
-		dataType = type;
+	public GridDataColumn(String name, String type){
+		this.name = name;
+		this.type = type;
 	}
 
-	public String getColumnName() {
-		return columnName;
+	public String getName() {
+		return name;
 	}
 
-	public String getMetaType() {
-		return metaType;
-	}
-
-	public String getDataType() {
-		return dataType;
+	public String getType() {
+		return type;
 	}
 
 }

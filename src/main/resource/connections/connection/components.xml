@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "definitions.dtd">
+
+<module name="business" description="business case test">
+
+   <query name="Scenario" description="Fecth scenario related columns"
+          basetable="dtopt.scenario" alias="s">
+          
+          <column name="id"
+                  columnname="scenarioid"
+                  orderby="false"
+                  from="s"/>
+                  
+          <column name="name"
+                  columnname="name"
+                  orderby="false"
+                  from="s"/>
+                  
+          <column name="description"
+                  columnname="description"
+                  orderby="false"
+                  from="s"/>
+          
+          <column name="goal"
+                  columnname="goalvalue"
+                  orderby="false"
+                  from="s"/>
+          
+          <column name="type"
+                  columnname="scenariotype"
+                  orderby="false"
+                  from="s"/>
+                  
+          <column name="startdate"
+                  columnname="startdate"
+                  orderby="false"
+                  from="s"/>
+          
+          <column name="enddate"
+                  columnname="enddate"
+                  orderby="false"
+                  from="s"/> 
+          
+   </query>
+
+
+
+</module>
