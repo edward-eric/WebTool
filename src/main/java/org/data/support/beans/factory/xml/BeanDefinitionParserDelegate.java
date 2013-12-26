@@ -4,7 +4,9 @@ import org.w3c.dom.Element;
 
 public class BeanDefinitionParserDelegate implements ParserDelegate{
 	
-	public BeanDefinitionParserDelegate(Element e)
+	public BeanDefinitionParserDelegate(Element e){
+		
+	}
 
 	@Override
 	public void preProcess(Element e) {
