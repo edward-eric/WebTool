@@ -14,7 +14,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		log.debug("Loading bean definitions");
 		Element root = doc.getDocumentElement();
 		
-		BeanDefinitionParserDelegate delegate = new BeanDefinitionParserDelegate();
+		QueryDefinitionParserDelegate delegate = new QueryDefinitionParserDelegate();
 		
 		preProcess(root);
 		process(root, delegate);
@@ -26,7 +26,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	
 	protected void postProcess(Element e) {}
 	
-	protected void process(Element e, BeanDefinitionParserDelegate delegate){
+	protected void process(Element e, QueryDefinitionParserDelegate delegate){
 		
 	}
 

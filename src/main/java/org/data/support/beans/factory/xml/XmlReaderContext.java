@@ -1,52 +1,45 @@
 package org.data.support.beans.factory.xml;
 
-public class XmlReaderContext extends ReaderContext {
+import org.data.support.beans.factory.support.QueryDefinitionRegistry;
+import org.springframework.beans.factory.parsing.ProblemReporter;
+import org.springframework.beans.factory.parsing.ReaderContext;
+import org.springframework.beans.factory.parsing.ReaderEventListener;
+import org.springframework.beans.factory.parsing.SourceExtractor;
+import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
-	private final XmlBeanDefinitionReader reader;
+public class XMLReaderContext extends ReaderContext{
+	
+	
+	private final XmlQueryDefinitionReader reader;
+	
+	private final NamespaceHandlerResolver resolver;
 
-	private final NamespaceHandlerResolver namespaceHandlerResolver;
-
-
-	public XmlReaderContext(
-			Resource resource, ProblemReporter problemReporter,
+	public XMLReaderContext(Resource resource, ProblemReporter problemReporter,
 			ReaderEventListener eventListener, SourceExtractor sourceExtractor,
-			XmlBeanDefinitionReader reader, NamespaceHandlerResolver namespaceHandlerResolver) {
-
+			XmlQueryDefinitionReader reader,
+			NamespaceHandlerResolver resolver) {
 		super(resource, problemReporter, eventListener, sourceExtractor);
 		this.reader = reader;
-		this.namespaceHandlerResolver = namespaceHandlerResolver;
+		this.resolver = resolver;
 	}
-
-
-	public final XmlBeanDefinitionReader getReader() {
+	
+	public final XmlQueryDefinitionReader getReader() {
 		return this.reader;
 	}
-
+	
 	public final QueryDefinitionRegistry getRegistry() {
 		return this.reader.getRegistry();
 	}
-
+	
 	public final ResourceLoader getResourceLoader() {
 		return this.reader.getResourceLoader();
 	}
-
-	public final ClassLoader getBeanClassLoader() {
-		return this.reader.getBeanClassLoader();
+	
+	public final ClassLoader getQueryClassLoader(){
+		return null;
 	}
-
-	public final NamespaceHandlerResolver getNamespaceHandlerResolver() {
-		return this.namespaceHandlerResolver;
-	}
-
-
-	public String generateBeanName(BeanDefinition beanDefinition) {
-		return this.reader.getBeanNameGenerator().generateBeanName(beanDefinition, getRegistry());
-	}
-
-	public String registerWithGeneratedName(BeanDefinition beanDefinition) {
-		String generatedName = generateBeanName(beanDefinition);
-		getRegistry().registerBeanDefinition(generatedName, beanDefinition);
-		return generatedName;
-	}
+	
 
 }

@@ -1,36 +1,21 @@
 package org.data.support.beans.factory.xml;
 
-import java.util.Stack;
+import org.data.support.beans.factory.config.QueryDefinition;
+import org.data.support.beans.factory.support.QueryDefinitionRegistry;
+import org.springframework.beans.factory.xml.XmlReaderContext;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
-import org.springframework.beans.factory.parsing.ComponentDefinition;
-import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+
 
 public final class ParserContext {
 
 	private final XmlReaderContext readerContext;
 
-	private final BeanDefinitionParserDelegate delegate;
-
-	private BeanDefinition containingBeanDefinition;
-
-	private final Stack<ComponentDefinition> containingComponents = new Stack<ComponentDefinition>();
+	private final QueryDefinitionParserDelegate delegate;
 
 
-	public ParserContext(XmlReaderContext readerContext, BeanDefinitionParserDelegate delegate) {
+	public ParserContext(XmlReaderContext readerContext, QueryDefinitionParserDelegate delegate) {
 		this.readerContext = readerContext;
 		this.delegate = delegate;
-	}
-
-	public ParserContext(XmlReaderContext readerContext, BeanDefinitionParserDelegate delegate,
-			BeanDefinition containingBeanDefinition) {
-
-		this.readerContext = readerContext;
-		this.delegate = delegate;
-		this.containingBeanDefinition = containingBeanDefinition;
 	}
 
 
@@ -38,11 +23,11 @@ public final class ParserContext {
 		return this.readerContext;
 	}
 
-	public final BeanDefinitionRegistry getRegistry() {
+	public final QueryDefinitionRegistry getRegistry() {
 		return this.readerContext.getRegistry();
 	}
 
-	public final BeanDefinitionParserDelegate getDelegate() {
+	public final QueryDefinitionParserDelegate getDelegate() {
 		return this.delegate;
 	}
 
@@ -55,7 +40,7 @@ public final class ParserContext {
 	}
 
 	public boolean isDefaultLazyInit() {
-		return BeanDefinitionParserDelegate.TRUE_VALUE.equals(this.delegate.getDefaults().getLazyInit());
+		return QueryDefinitionParserDelegate.TRUE_VALUE.equals(this.delegate.getDefaults().getLazyInit());
 	}
 
 	public Object extractSource(Object sourceCandidate) {

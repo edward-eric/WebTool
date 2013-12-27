@@ -2,7 +2,7 @@ package org.data.support.beans.factory.xml;
 
 
 
-public class XmlBeanDefinitionReader extends AbstractQueryDefinitionReader {
+public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 	/**
 	 * Indicates that the validation should be disabled.
@@ -26,7 +26,7 @@ public class XmlBeanDefinitionReader extends AbstractQueryDefinitionReader {
 
 
 	/** Constants instance for this class */
-	private static final Constants constants = new Constants(XmlBeanDefinitionReader.class);
+	private static final Constants constants = new Constants(XmlQueryDefinitionReader.class);
 
 	private int validationMode = VALIDATION_AUTO;
 
@@ -59,7 +59,7 @@ public class XmlBeanDefinitionReader extends AbstractQueryDefinitionReader {
 	 * @param registry the BeanFactory to load bean definitions into,
 	 * in the form of a BeanDefinitionRegistry
 	 */
-	public XmlBeanDefinitionReader(QueryDefinitionRegistry registry) {
+	public XmlQueryDefinitionReader(QueryDefinitionRegistry registry) {
 		super(registry);
 	}
 
