@@ -1,7 +1,41 @@
+/*
+ * Copyright 2013 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.data.support.beans.factory.xml;
 
+import org.data.support.beans.factory.support.QueryDefinitionRegistry;
+import org.springframework.beans.factory.xml.BeanDefinitionDocumentReader;
+import org.springframework.core.Constants;
+import org.springframework.util.xml.XmlValidationModeDetector;
 
 
+/**
+ * Query definition reader for XML query definitions.
+ * Delegates the actual XML document reading to an implementation
+ * of the {@link QueryDefinitionDocumentReader} interface.
+ *
+ * <p>This class loads a DOM document and applies the QueryDefinitionDocumentReader to it.
+ * The document reader will register each query definition with the given query factory,
+ * talking to the latter's implementation of the
+ * {@link QueryDefinitionRegistryy} interface.
+ * 
+ * @author chen
+ * @created Dec 27, 2013
+ * @since 2013
+ */
 public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 	/**
@@ -32,7 +66,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 	private boolean namespaceAware = false;
 
-	private Class documentReaderClass = DefaultBeanDefinitionDocumentReader.class;
+	private Class documentReaderClass = DefaultQueryDefinitionDocumentReader.class;
 
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
 
@@ -207,13 +241,13 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	}
 
 	/**
-	 * Specify the {@link BeanDefinitionDocumentReader} implementation to use,
+	 * Specify the {@link QueryDefinitionDocumentReader} implementation to use,
 	 * responsible for the actual reading of the XML bean definition document.
-	 * <p>The default is {@link DefaultBeanDefinitionDocumentReader}.
+	 * <p>The default is {@link DefaultQueryDefinitionDocumentReader}.
 	 * @param documentReaderClass the desired BeanDefinitionDocumentReader implementation class
 	 */
 	public void setDocumentReaderClass(Class documentReaderClass) {
-		if (documentReaderClass == null || !BeanDefinitionDocumentReader.class.isAssignableFrom(documentReaderClass)) {
+		if (documentReaderClass == null || !QueryDefinitionDocumentReader.class.isAssignableFrom(documentReaderClass)) {
 			throw new IllegalArgumentException(
 					"documentReaderClass must be an implementation of the BeanDefinitionDocumentReader interface");
 		}
@@ -413,25 +447,25 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	 * @throws QueryDefinitionStoreException in case of parsing errors
 	 * @see #loadBeanDefinitions
 	 * @see #setDocumentReaderClass
-	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
+	 * @see QueryDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws QueryDefinitionStoreException {
 		// Read document based on new BeanDefinitionDocumentReader SPI.
-		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		QueryDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		int countBefore = getRegistry().getBeanDefinitionCount();
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 
 	/**
-	 * Create the {@link BeanDefinitionDocumentReader} to use for actually
+	 * Create the {@link QueryDefinitionDocumentReader} to use for actually
 	 * reading bean definitions from an XML document.
 	 * <p>The default implementation instantiates the specified "documentReaderClass".
 	 * @see #setDocumentReaderClass
 	 */
 	@SuppressWarnings("unchecked")
-	protected BeanDefinitionDocumentReader createBeanDefinitionDocumentReader() {
-		return BeanDefinitionDocumentReader.class.cast(BeanUtils.instantiateClass(this.documentReaderClass));
+	protected QueryDefinitionDocumentReader createBeanDefinitionDocumentReader() {
+		return QueryDefinitionDocumentReader.class.cast(BeanUtils.instantiateClass(this.documentReaderClass));
 	}
 
 	/**

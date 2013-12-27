@@ -9,14 +9,14 @@ import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-public class XMLReaderContext extends ReaderContext{
+public class XmlReaderContext extends ReaderContext{
 	
 	
 	private final XmlQueryDefinitionReader reader;
 	
 	private final NamespaceHandlerResolver resolver;
 
-	public XMLReaderContext(Resource resource, ProblemReporter problemReporter,
+	public XmlReaderContext(Resource resource, ProblemReporter problemReporter,
 			ReaderEventListener eventListener, SourceExtractor sourceExtractor,
 			XmlQueryDefinitionReader reader,
 			NamespaceHandlerResolver resolver) {

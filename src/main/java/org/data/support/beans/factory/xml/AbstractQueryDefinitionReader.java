@@ -25,7 +25,6 @@ import org.data.support.beans.factory.support.DefaultQueryNameGenerator;
 import org.data.support.beans.factory.support.QueryDefinitionReader;
 import org.data.support.beans.factory.support.QueryDefinitionRegistry;
 import org.data.support.beans.factory.support.QueryNameGenerator;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
