@@ -9,3 +9,4 @@
 maven-eclipse.xml
 /.settings
 /target
+/.externalToolBuilders
