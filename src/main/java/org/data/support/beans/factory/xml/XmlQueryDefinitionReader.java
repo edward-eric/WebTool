@@ -16,10 +16,22 @@
 
 package org.data.support.beans.factory.xml;
 
+import org.data.support.beans.factory.parsing.DefaultReaderEventListener;
+import org.data.support.beans.factory.parsing.FailFastProblemReporter;
+import org.data.support.beans.factory.parsing.ReaderEventListener;
 import org.data.support.beans.factory.support.QueryDefinitionRegistry;
+import org.springframework.beans.factory.parsing.NullSourceExtractor;
+import org.springframework.beans.factory.parsing.ProblemReporter;
+import org.springframework.beans.factory.parsing.SourceExtractor;
 import org.springframework.beans.factory.xml.BeanDefinitionDocumentReader;
+import org.springframework.beans.factory.xml.DefaultDocumentLoader;
+import org.springframework.beans.factory.xml.DocumentLoader;
+import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 import org.springframework.core.Constants;
+import org.springframework.util.xml.SimpleSaxErrorHandler;
 import org.springframework.util.xml.XmlValidationModeDetector;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 
 
 /**
@@ -70,7 +82,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
 
-	private ReaderEventListener eventListener = new EmptyReaderEventListener();
+	private ReaderEventListener eventListener = new DefaultReaderEventListener();
 
 	private SourceExtractor sourceExtractor = new NullSourceExtractor();
 
