@@ -16,22 +16,45 @@
 
 package org.data.support.beans.factory.xml;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.data.support.beans.factory.QueryDefinitionStoreException;
+import org.data.support.beans.factory.XmlQueryDefinitionStoreException;
 import org.data.support.beans.factory.parsing.DefaultReaderEventListener;
 import org.data.support.beans.factory.parsing.FailFastProblemReporter;
-import org.data.support.beans.factory.parsing.ReaderEventListener;
 import org.data.support.beans.factory.support.QueryDefinitionRegistry;
+import org.data.support.beans.factory.support.QueryNameGenerator;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.parsing.EmptyReaderEventListener;
 import org.springframework.beans.factory.parsing.NullSourceExtractor;
 import org.springframework.beans.factory.parsing.ProblemReporter;
+import org.springframework.beans.factory.parsing.ReaderEventListener;
 import org.springframework.beans.factory.parsing.SourceExtractor;
 import org.springframework.beans.factory.xml.BeanDefinitionDocumentReader;
 import org.springframework.beans.factory.xml.DefaultDocumentLoader;
+import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.DocumentLoader;
 import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 import org.springframework.core.Constants;
+import org.springframework.core.NamedThreadLocal;
+import org.springframework.core.io.DescriptiveResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.EncodedResource;
+import org.springframework.util.Assert;
 import org.springframework.util.xml.SimpleSaxErrorHandler;
 import org.springframework.util.xml.XmlValidationModeDetector;
+import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -82,7 +105,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
 
-	private ReaderEventListener eventListener = new DefaultReaderEventListener();
+	private ReaderEventListener eventListener = new EmptyReaderEventListener();
 
 	private SourceExtractor sourceExtractor = new NullSourceExtractor();
 
@@ -97,7 +120,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	private final XmlValidationModeDetector validationModeDetector = new XmlValidationModeDetector();
 
 	private final ThreadLocal<Set<EncodedResource>> resourcesCurrentlyBeingLoaded =
-			new NamedThreadLocal<Set<EncodedResource>>("XML bean definition resources currently being loaded");
+			new NamedThreadLocal<Set<EncodedResource>>("XML query definition resources currently being loaded");
 
 
 	/**
@@ -234,7 +257,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 				this.entityResolver = new ResourceEntityResolver(resourceLoader);
 			}
 			else {
-				this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
+				this.entityResolver = new DelegateEntityResolver(getQueryClassLoader());
 			}
 		}
 		return this.entityResolver;
@@ -268,23 +291,23 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 
 
 	/**
-	 * Load bean definitions from the specified XML file.
+	 * Load query definitions from the specified XML file.
 	 * @param resource the resource descriptor for the XML file
-	 * @return the number of bean definitions found
+	 * @return the number of query definitions found
 	 * @throws QueryDefinitionStoreException in case of loading or parsing errors
 	 */
-	public int loadBeanDefinitions(Resource resource) throws QueryDefinitionStoreException {
-		return loadBeanDefinitions(new EncodedResource(resource));
+	public int loadQueryDefinitions(Resource resource) throws QueryDefinitionStoreException {
+		return loadQueryDefinitions(new EncodedResource(resource));
 	}
 
 	/**
-	 * Load bean definitions from the specified XML file.
+	 * Load query definitions from the specified XML file.
 	 * @param encodedResource the resource descriptor for the XML file,
 	 * allowing to specify an encoding to use for parsing the file
-	 * @return the number of bean definitions found
+	 * @return the number of query definitions found
 	 * @throws QueryDefinitionStoreException in case of loading or parsing errors
 	 */
-	public int loadBeanDefinitions(EncodedResource encodedResource) throws QueryDefinitionStoreException {
+	public int loadQueryDefinitions(EncodedResource encodedResource) throws QueryDefinitionStoreException {
 		Assert.notNull(encodedResource, "EncodedResource must not be null");
 		if (logger.isInfoEnabled()) {
 			logger.info("Loading XML bean definitions from " + encodedResource.getResource());
@@ -306,7 +329,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
-				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
+				return doLoadQueryDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
 				inputStream.close();
@@ -325,54 +348,54 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	}
 
 	/**
-	 * Load bean definitions from the specified XML file.
+	 * Load query definitions from the specified XML file.
 	 * @param inputSource the SAX InputSource to read from
-	 * @return the number of bean definitions found
+	 * @return the number of query definitions found
 	 * @throws QueryDefinitionStoreException in case of loading or parsing errors
 	 */
-	public int loadBeanDefinitions(InputSource inputSource) throws QueryDefinitionStoreException {
-		return loadBeanDefinitions(inputSource, "resource loaded through SAX InputSource");
+	public int loadQueryDefinitions(InputSource inputSource) throws QueryDefinitionStoreException {
+		return loadQueryDefinitions(inputSource, "resource loaded through SAX InputSource");
 	}
 
 	/**
-	 * Load bean definitions from the specified XML file.
+	 * Load query definitions from the specified XML file.
 	 * @param inputSource the SAX InputSource to read from
 	 * @param resourceDescription a description of the resource
 	 * (can be <code>null</code> or empty)
-	 * @return the number of bean definitions found
+	 * @return the number of query definitions found
 	 * @throws QueryDefinitionStoreException in case of loading or parsing errors
 	 */
-	public int loadBeanDefinitions(InputSource inputSource, String resourceDescription)
+	public int loadQueryDefinitions(InputSource inputSource, String resourceDescription)
 			throws QueryDefinitionStoreException {
 
-		return doLoadBeanDefinitions(inputSource, new DescriptiveResource(resourceDescription));
+		return doLoadQueryDefinitions(inputSource, new DescriptiveResource(resourceDescription));
 	}
 
 
 	/**
-	 * Actually load bean definitions from the specified XML file.
+	 * Actually load query definitions from the specified XML file.
 	 * @param inputSource the SAX InputSource to read from
 	 * @param resource the resource descriptor for the XML file
-	 * @return the number of bean definitions found
+	 * @return the number of query definitions found
 	 * @throws QueryDefinitionStoreException in case of loading or parsing errors
 	 */
-	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
+	protected int doLoadQueryDefinitions(InputSource inputSource, Resource resource)
 			throws QueryDefinitionStoreException {
 		try {
 			int validationMode = getValidationModeForResource(resource);
 			Document doc = this.documentLoader.loadDocument(
 					inputSource, getEntityResolver(), this.errorHandler, validationMode, isNamespaceAware());
-			return registerBeanDefinitions(doc, resource);
+			return registerQueryDefinitions(doc, resource);
 		}
 		catch (QueryDefinitionStoreException ex) {
 			throw ex;
 		}
 		catch (SAXParseException ex) {
-			throw new XmlBeanDefinitionStoreException(resource.getDescription(),
+			throw new XmlQueryDefinitionStoreException(resource.getDescription(),
 					"Line " + ex.getLineNumber() + " in XML document from " + resource + " is invalid", ex);
 		}
 		catch (SAXException ex) {
-			throw new XmlBeanDefinitionStoreException(resource.getDescription(),
+			throw new XmlQueryDefinitionStoreException(resource.getDescription(),
 					"XML document from " + resource + " is invalid", ex);
 		}
 		catch (ParserConfigurationException ex) {
@@ -461,22 +484,22 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	 * @see #setDocumentReaderClass
 	 * @see QueryDefinitionDocumentReader#registerBeanDefinitions
 	 */
-	public int registerBeanDefinitions(Document doc, Resource resource) throws QueryDefinitionStoreException {
+	public int registerQueryDefinitions(Document doc, Resource resource) throws QueryDefinitionStoreException {
 		// Read document based on new BeanDefinitionDocumentReader SPI.
-		QueryDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		int countBefore = getRegistry().getBeanDefinitionCount();
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-		return getRegistry().getBeanDefinitionCount() - countBefore;
+		QueryDefinitionDocumentReader documentReader = createQueryDefinitionDocumentReader();
+		int countBefore = getRegistry().getQueryDefinitionCount();
+		documentReader.registerQueryDefinitions(doc, createReaderContext(resource));
+		return getRegistry().getQueryDefinitionCount() - countBefore;
 	}
 
 	/**
 	 * Create the {@link QueryDefinitionDocumentReader} to use for actually
-	 * reading bean definitions from an XML document.
+	 * reading query definitions from an XML document.
 	 * <p>The default implementation instantiates the specified "documentReaderClass".
 	 * @see #setDocumentReaderClass
 	 */
 	@SuppressWarnings("unchecked")
-	protected QueryDefinitionDocumentReader createBeanDefinitionDocumentReader() {
+	protected QueryDefinitionDocumentReader createQueryDefinitionDocumentReader() {
 		return QueryDefinitionDocumentReader.class.cast(BeanUtils.instantiateClass(this.documentReaderClass));
 	}
 
@@ -487,8 +510,8 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 		if (this.namespaceHandlerResolver == null) {
 			this.namespaceHandlerResolver = createDefaultNamespaceHandlerResolver();
 		}
-		return new XmlReaderContext(resource, this.problemReporter, this.eventListener,
-				this.sourceExtractor, this, this.namespaceHandlerResolver);
+		return new XmlReaderContext(resource, this.problemReporter, 
+				this.eventListener, this.sourceExtractor, this, this.namespaceHandlerResolver);
 	}
 
 	/**
@@ -498,5 +521,7 @@ public class XmlQueryDefinitionReader extends AbstractQueryDefinitionReader {
 	protected NamespaceHandlerResolver createDefaultNamespaceHandlerResolver() {
 		return new DefaultNamespaceHandlerResolver(getResourceLoader().getClassLoader());
 	}
+
+
 
 }

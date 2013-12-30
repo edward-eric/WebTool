@@ -111,11 +111,11 @@ public abstract class AbstractQueryDefinitionReader implements QueryDefinitionRe
 		this.classLoader = classLoader;
 	}
 	
-	public ClassLoader getClassLoader(){
+	public ClassLoader getQueryClassLoader(){
 		return this.classLoader;
 	}
 	
-	public QueryNameGenerator getGenerator() {
+	public QueryNameGenerator getQueryNameGenerator() {
 		return generator;
 	}
 	/**
@@ -192,11 +192,11 @@ public abstract class AbstractQueryDefinitionReader implements QueryDefinitionRe
 		}
 	}
 	
-	public int loadBeanDefinitions(String... locations) throws QueryDefinitionStoreException {
+	public int loadQueryDefinitions(String... locations) throws QueryDefinitionStoreException {
 		Assert.notNull(locations, "Location array must not be null");
 		int counter = 0;
 		for (String location : locations) {
-			counter += loadBeanDefinitions(location);
+			counter += loadQueryDefinitions(location);
 		}
 		return counter;
 		
